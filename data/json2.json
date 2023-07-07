@@ -1,0 +1,52 @@
+{
+    "$schema": "http://json-schema.org/draft/2019-09/schema",
+    "title": "Politiker",
+    "type": "object",
+    "required": ["Vorname", "Nachname", "Geburtsdatum", "Nationalität"],
+    "properties":
+    {
+      "Vorname":
+      {
+        "type": "string"
+      },
+      "Nachname":
+      {
+        "type": "string"
+      },
+      "Geburtsdatum":
+      {
+        "type": "date"
+      },
+      "Nationalität":
+      {
+        "type": "string"
+      },
+      "Partei":
+      {
+        "type": "object",
+        "properties":
+        {
+          "Name":
+          {
+            "type": "string"
+          },
+          "Hauptsitz":
+          {
+            "type": "string"
+          },
+          "Gründungsdatum":
+          {
+            "type": "date"
+          },
+          "Gründungsort":
+          {
+            "type": "string"
+          }
+        }
+      },
+      "Amt":
+      {
+        "type": "string"
+      }
+    }
+  }
