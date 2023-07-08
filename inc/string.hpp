@@ -1,9 +1,56 @@
 #pragma once
 #include <string>
 #include <sstream>
+#include <algorithm>
+#include <cctype>
+#include <locale>
 
-namespace MM::str
+namespace strn
 {
+    /// @brief Trims a string from the left (in place)
+    static inline void ltrim(std::string &s)
+    {
+        s.erase(s.begin(), std::find_if(s.begin(), s.end(), [](unsigned char ch)
+                                        { return !std::isspace(ch); }));
+    }
+
+    /// @brief Trims a string from the right (in place)
+    static inline void rtrim(std::string &s)
+    {
+        s.erase(std::find_if(s.rbegin(), s.rend(), [](unsigned char ch)
+                             { return !std::isspace(ch); })
+                    .base(),
+                s.end());
+    }
+
+    /// @brief Trims a string from both ends (in place)
+    static inline void trim(std::string &s)
+    {
+        rtrim(s);
+        ltrim(s);
+    }
+
+    /// @brief Trims a string from the left (copy)
+    [[nodiscard]] static inline std::string ltrim_c(std::string s)
+    {
+        ltrim(s);
+        return s;
+    }
+
+    /// @brief Trims a string from the right (copy)
+    [[nodiscard]] static inline std::string rtrim_c(std::string s)
+    {
+        rtrim(s);
+        return s;
+    }
+
+    /// @brief Trims a string from both ends (copy)
+    [[nodiscard]] static inline std::string trim_c(std::string s)
+    {
+        trim(s);
+        return s;
+    }
+
     /// @brief Finds the nth occurrence of c in str. n is null-indexed so that n = 0 returns the first occurence
     /// @return Index of the nth occurence of n or str.size() if not found
     [[nodiscard]] size_t find(const std::string &str, char c, size_t n);

@@ -1,6 +1,6 @@
 #include "../inc/string.hpp"
 #include <iostream>
-namespace MM::str
+namespace strn
 {
     size_t find(const std::string &str, char c, size_t n)
     {

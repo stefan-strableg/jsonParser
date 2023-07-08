@@ -6,52 +6,81 @@
 
 namespace json
 {
-
-class JsonObject
-{
-private:
-
-    struct JsonObjectValue
+    class JsonArray;
+    class JsonObject;
+    struct JsonItem
     {
-        const bool isObject;
-        union ptr
+        enum : uint8_t
         {
-            std::vector<std::string>* array = nullptr;
-            JsonObject* object;
-        };
-        std::string string;
+            error,
+            nonJson,
+            object,
+            array
+        } type = nonJson;
+
+        void *valuePtr = nullptr;
+
+        template <typename T>
+        T get();
+
+        std::string getString();
+
+        JsonItem() = default;
+        JsonItem(const std::string &str);
+        JsonItem(std::string &&str);
+        ~JsonItem();
     };
 
-    static const uint8_t stringValid = 1 << 0;
-    static const uint8_t _dataValid = 1 << 1;
+    class JsonArray
+    {
+    private:
+        static const uint8_t _stringValid = 1 << 0;
+        static const uint8_t _dataValid = 1 << 1;
 
-    uint8_t flags;
-    std::string _string;
-    std::map<std::string, std::string> _data;
+        uint8_t _flags;
+        std::string _string;
+        std::vector<JsonItem> _data;
 
-    template <typename ...T, typename T1>
-    bool _parse(T1 item, T...);
+        bool _buildMap();
+        bool _buildString();
 
-    template <typename T1>
-    bool _parse(T1 item);
+    public:
+        JsonArray();
+        JsonArray(std::string str);
 
-public:
+        JsonItem at(size_t n);
+    };
 
-    bool parse(const std::string& jsonString);
+    class JsonObject
+    {
+    private:
+        static const uint8_t _stringValid = 1 << 0;
+        static const uint8_t _dataValid = 1 << 1;
 
-    template <typename ...T>
-    bool parse(T... );
+        uint8_t _flags;
+        std::string _string;
+        std::map<std::string, JsonItem> _data;
 
-    std::string getJsonString();
+        template <typename... T, typename T1>
+        bool _parse(T1 item, T...);
 
-    JsonObject getJsonObject();
+        template <typename T1>
+        bool _parse(T1 item);
 
-    std::string getString();
+        bool _buildMap();
+        bool _buildString();
 
-    bool getBool();
+    public:
+        JsonObject();
+        JsonObject(std::string str);
 
-    int32_t getInt();
+        bool parse(const std::string &jsonString);
 
-    float_t getFloat();
-};
+        template <typename... T>
+        bool parse(T...);
+
+        JsonItem get(std::string key);
+
+        std::string getString();
+    };
 }
