@@ -29,8 +29,10 @@ int main(void)
 
   // std::cout << jobj.getString() << "\n";
 
-  std::cout << jobj.getS("Herausgeber") << "\n";
-  std::cout << jobj.getA("Hobbys1").getS(1) << "\n";
+  jobj.A("Hobbys1") = json::JsonArray("[1, 2, 3]");
+  jobj.O("Inhaber").A("Hobbys2").S(1) = "\"WOOOOOOHOOOOO\"";
+
+  std::cout << jobj.getString() << "\n";
 
   return EXIT_SUCCESS;
 }

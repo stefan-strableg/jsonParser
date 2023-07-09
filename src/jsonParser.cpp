@@ -166,17 +166,14 @@ namespace json
             return;
         _string = str;
         _flags |= _flagStringValid;
-        _buildMap();
-        _flags &= ~_flagStringValid;
-        _buildString();
     }
 
-    bool JsonArray::_buildMap()
+    void JsonArray::_validateMap()
     {
-        if (_flags & _flagDataValid)
-            return true;
+        if (_flags & _flagMapValid)
+            return;
         if (!(_flags & _flagStringValid))
-            return false;
+            throw std::runtime_error("JsonArray::_validateMap: Cannot build map, string is not valid");
 
         size_t i = 1,
                tokStart = 1;
@@ -238,18 +235,16 @@ namespace json
         }
         _data.push_back(_string.substr(tokStart, i - tokStart - 1));
 
-        _flags |= _flagDataValid;
-
-        return true;
+        _flags |= _flagMapValid;
     }
 
-    bool JsonArray::_buildString()
+    void JsonArray::_validateString()
     {
 
         if (_flags & _flagStringValid)
-            return true;
-        if (!(_flags & _flagDataValid))
-            return false;
+            return;
+        if (!(_flags & _flagMapValid))
+            throw std::runtime_error("JsonArray::_validateString: Cannot build string, map is invalid");
 
         std::ostringstream outStr;
 
@@ -268,20 +263,27 @@ namespace json
 
         _string = outStr.str();
         _flags |= _flagStringValid;
-        return true;
+    }
+
+    void JsonArray::_invalidateMap()
+    {
+        _flags &= ~_flagMapValid;
+    }
+
+    void JsonArray::_invalidateString()
+    {
+        _flags &= ~_flagStringValid;
     }
 
     std::string JsonArray::getString()
     {
-        if (!_buildString())
-            return "";
+        _validateString();
         return _string;
     }
 
     JsonItem JsonArray::_at(size_t n)
     {
-        if (!_buildMap())
-            return JsonItem();
+        _validateMap();
         if (_data.size() <= n)
             return JsonItem();
 
@@ -291,18 +293,21 @@ namespace json
     template <typename T>
     T JsonArray::get(size_t n)
     {
+        _validateMap();
         return strn::string_to<T>(_at(n).getString());
     }
 
     template <>
     std::string JsonArray::get(size_t n)
     {
+        _validateMap();
         return _at(n).getString();
     }
 
     template <>
     JsonArray JsonArray::get(size_t n)
     {
+        _validateMap();
         auto item = _at(n);
         if (item.type != JsonItem::JsonItemType::array)
             return JsonArray();
@@ -312,6 +317,7 @@ namespace json
     template <>
     JsonObject JsonArray::get(size_t n)
     {
+        _validateMap();
         auto item = _at(n);
         if (item.type != JsonItem::JsonItemType::object)
             return JsonObject();
@@ -333,6 +339,42 @@ namespace json
         return get<std::string>(n);
     }
 
+    JsonArray &JsonArray::A(size_t n)
+    {
+        _validateMap();
+        if (_data.size() <= n)
+            throw std::runtime_error("JsonArray::A: Index out of range");
+        if (_data[n].type != JsonItem::JsonItemType::array)
+            throw std::runtime_error("JsonArray::A: JsonObject's index " + std::to_string(n) + " is not of type array");
+
+        _invalidateString();
+        return *static_cast<JsonArray *>(_data[n].valuePtr);
+    }
+
+    JsonObject &JsonArray::O(size_t n)
+    {
+        _validateMap();
+        if (_data.size() <= n)
+            throw std::runtime_error("JsonArray::O: Index out of range");
+        if (_data[n].type != JsonItem::JsonItemType::object)
+            throw std::runtime_error("JsonArray::O: JsonObject's index " + std::to_string(n) + " is not of type object");
+
+        _invalidateString();
+        return *static_cast<JsonObject *>(_data[n].valuePtr);
+    }
+
+    std::string &JsonArray::S(size_t n)
+    {
+        _validateMap();
+        if (_data.size() <= n)
+            throw std::runtime_error("JsonArray::S: Index out of range");
+        if (_data[n].type != JsonItem::JsonItemType::string && _data[n].type != JsonItem::JsonItemType::nonString)
+            throw std::runtime_error("JsonArray::S: JsonObject's index " + std::to_string(n) + " is not of type string");
+
+        _invalidateString();
+        return *static_cast<std::string *>(_data[n].valuePtr);
+    }
+
     JsonObject::JsonObject()
         : _flags(0)
     {
@@ -346,17 +388,14 @@ namespace json
             return;
         _string = str;
         _flags |= _flagStringValid;
-        _buildMap();
-        _flags &= ~_flagStringValid;
-        _buildString();
     }
 
-    bool JsonObject::_buildMap()
+    void JsonObject::_validateMap()
     {
-        if (_flags & _flagDataValid)
-            return true;
+        if (_flags & _flagMapValid)
+            return;
         if (!(_flags & _flagStringValid))
-            return false;
+            throw std::runtime_error("JsonObject::_validateMap: Cannot build Map, string is invalid");
 
         size_t i = 1,
                tokStart = 1;
@@ -444,17 +483,15 @@ namespace json
             _data.insert(keyValPair);
         }
 
-        _flags |= _flagDataValid;
-
-        return true;
+        _flags |= _flagMapValid;
     }
 
-    bool JsonObject::_buildString()
+    void JsonObject::_validateString()
     {
         if (_flags & _flagStringValid)
-            return true;
-        if (!(_flags & _flagDataValid))
-            return false;
+            return;
+        if (!(_flags & _flagMapValid))
+            throw std::runtime_error("JsonObject::_validateString: Cannot build string, map is invalid");
 
         std::ostringstream outStr;
 
@@ -473,12 +510,22 @@ namespace json
 
         _string = outStr.str();
         _flags |= _flagStringValid;
-        return true;
+    }
+
+    void JsonObject::_invalidateMap()
+    {
+        _flags &= ~_flagMapValid;
+    }
+
+    void JsonObject::_invalidateString()
+    {
+        _flags &= ~_flagStringValid;
     }
 
     template <typename T>
     T JsonObject::get(std::string key)
     {
+        _validateMap();
         if (!_data.contains(key))
             return T();
         return strn::string_to<T>(_data[key].getString());
@@ -487,6 +534,7 @@ namespace json
     template <>
     std::string JsonObject::get(std::string key)
     {
+        _validateMap();
         if (!_data.contains(key))
             return "";
 
@@ -496,6 +544,7 @@ namespace json
     template <>
     JsonArray JsonObject::get(std::string key)
     {
+        _validateMap();
         if (!_data.contains(key))
             return JsonArray();
         if (_data[key].type != JsonItem::JsonItemType::array)
@@ -506,6 +555,7 @@ namespace json
     template <>
     JsonObject JsonObject::get(std::string key)
     {
+        _validateMap();
         if (!_data.contains(key))
             return JsonObject();
         if (_data[key].type != JsonItem::JsonItemType::object)
@@ -528,16 +578,57 @@ namespace json
         return get<std::string>(key);
     }
 
+    JsonArray &JsonObject::A(std::string key)
+    {
+        _validateMap();
+        if (!_data.contains(key))
+            throw std::runtime_error("JsonObject::A: JsonObject does not contain a member called " + key);
+        if (_data[key].type != JsonItem::JsonItemType::array)
+            throw std::runtime_error("JsonObject::A: JsonObject's member " + key + " is not of type array");
+
+        _invalidateString();
+        return *static_cast<JsonArray *>(_data[key].valuePtr);
+    }
+
+    JsonObject &JsonObject::O(std::string key)
+    {
+        _validateMap();
+        if (!_data.contains(key))
+            throw std::runtime_error("JsonObject::O: JsonObject does not contain a member called " + key);
+        if (_data[key].type != JsonItem::JsonItemType::object)
+            throw std::runtime_error("JsonObject::O: JsonObject's member " + key + " is not of type object");
+
+        _invalidateString();
+        return *static_cast<JsonObject *>(_data[key].valuePtr);
+    }
+
+    std::string &JsonObject::S(std::string key)
+    {
+        _validateMap();
+        if (!_data.contains(key))
+            throw std::runtime_error("JsonObject::S: JsonObject does not contain a member called " + key);
+        if (_data[key].type != JsonItem::JsonItemType::string && _data[key].type != JsonItem::JsonItemType::nonString)
+            throw std::runtime_error("JsonObject::S: JsonObject's member " + key + " is not of type string or nonString");
+
+        _invalidateString();
+        return *static_cast<std::string *>(_data[key].valuePtr);
+    }
+
+    void JsonObject::insert(std::string key, std::string item)
+    {
+        _data.insert({key, JsonItem(item)});
+        _flags &= ~_flagStringValid;
+    }
+
     std::string JsonObject::getString()
     {
-        if (!_buildString())
-            return "";
+        _validateString();
         return _string;
     }
 
     void JsonObject::dump()
     {
-        _buildMap();
+        _validateMap();
         std::cout << "Dumping " << _data.size() << " objects:\n";
         for (auto &e : _data)
         {
@@ -547,7 +638,8 @@ namespace json
 
     void JsonObject::dumpMetadata()
     {
+        _validateMap();
         std::cout << "String valid: " << (_flags & _flagStringValid ? "YES" : "NO") << "\n"
-                  << "Data valid: " << (_flags & _flagDataValid ? "YES" : "NO") << "\n";
+                  << "Data valid: " << (_flags & _flagMapValid ? "YES" : "NO") << "\n";
     }
 }
