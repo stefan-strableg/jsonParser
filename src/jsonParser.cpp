@@ -62,7 +62,7 @@ namespace json
             return static_cast<JsonObject *>(valuePtr)->getString();
 
         if (type == array)
-            return ""; // ToDo
+            return static_cast<JsonArray *>(valuePtr)->getString();
 
         if (type == string)
             return *static_cast<std::string *>(valuePtr);
@@ -161,28 +161,121 @@ namespace json
     JsonArray::JsonArray(std::string str)
         : _flags(0)
     {
-        if (str.size() < 2 || *str.begin() != '[' || *(str.end() - 1) == ']')
+        strn::trim(str);
+        if (str.size() < 2 || *str.begin() != '[' || *(str.end() - 1) != ']')
             return;
         _string = str;
-        _flags |= _stringValid;
+        _flags |= _flagStringValid;
+        _buildMap();
+        _flags &= ~_flagStringValid;
+        _buildString();
     }
 
     bool JsonArray::_buildMap()
     {
-        return false;
+        if (_flags & _flagDataValid)
+            return true;
+        if (!(_flags & _flagStringValid))
+            return false;
+
+        size_t i = 1,
+               tokStart = 1;
+        uint16_t bracesLevel = 0,
+                 bracketsLevel = 0;
+        bool inQuote = false,
+             backslash = false;
+
+        for (; i < _string.size(); i++)
+        {
+            bool resetBackslash = backslash;
+
+            switch (_string[i])
+            {
+            case '\\':
+                backslash = !backslash;
+                break;
+            case '\"':
+                if (!backslash)
+                    inQuote = !inQuote;
+                break;
+            case '{':
+                if (!inQuote)
+                    bracesLevel++;
+                break;
+            case '}':
+                if (!inQuote)
+                    bracesLevel--;
+                break;
+            case '[':
+                if (!inQuote)
+                    bracketsLevel++;
+                break;
+            case ']':
+                if (!inQuote)
+                    bracketsLevel--;
+                break;
+            case ',':
+                if (!inQuote && bracesLevel == 0 && bracketsLevel == 0)
+                {
+                    _data.push_back(_string.substr(tokStart, i - tokStart));
+                    tokStart = i + 1;
+                }
+            }
+            std::cout << "\n"
+                      << "\n"
+                      << _string.substr(0, i + 1) << "\n"
+                      << "inQuote: " << inQuote << "\n"
+                      << "[] - level: " << bracketsLevel << "\n"
+                      << "{} - level: " << bracesLevel << "\n";
+            for (auto &e : _data)
+            {
+                std::cout << e.getString() << "\n";
+            }
+            std::cin.get();
+
+            if (resetBackslash)
+                backslash = false;
+        }
+        _data.push_back(_string.substr(tokStart, i - tokStart - 1));
+
+        _flags |= _flagDataValid;
+
+        return true;
     }
 
     bool JsonArray::_buildString()
     {
-        if (_flags & _stringValid)
+
+        if (_flags & _flagStringValid)
+            return true;
+        if (!(_flags & _flagDataValid))
             return false;
-        // ToDo
-        return false;
+
+        std::ostringstream outStr;
+
+        outStr << '[';
+
+        size_t i = 0;
+        for (auto &e : _data)
+        {
+            i++;
+            outStr << e.getString();
+            if (i < _data.size())
+                outStr << ',';
+        }
+
+        outStr << ']';
+
+        _string = outStr.str();
+        _flags |= _flagStringValid;
+        return true;
     }
 
     std::string JsonArray::getString()
     {
-        return "";
+        if (!_buildString())
+            return "";
+        return _string;
     }
 
     JsonItem JsonArray::at(size_t n)
@@ -201,24 +294,33 @@ namespace json
     }
 
     JsonObject::JsonObject(std::string str)
-        : _flags(0)
+        : JsonObject()
     {
         strn::trim(str);
         if (str.size() < 2 || *str.begin() != '{' || *(str.end() - 1) != '}')
             return;
         _string = str;
-        _flags |= _stringValid;
+        _flags |= _flagStringValid;
+        _buildMap();
+        _flags &= ~_flagStringValid;
+        _buildString();
     }
 
     bool JsonObject::_buildMap()
     {
-        if (_flags & _dataValid)
+        if (_flags & _flagDataValid)
             return true;
-        size_t i = 1, tokStart = 1;
-        uint16_t bracketLevel = 0;
-        bool first = true;
+        if (!(_flags & _flagStringValid))
+            return false;
+
+        size_t i = 1,
+               tokStart = 1;
+        uint16_t bracesLevel = 0,
+                 bracketsLevel = 0;
         std::pair<std::string, JsonItem> keyValPair = {"", JsonItem("")};
-        bool inQuote = false, backslash = false, inColonComa = false;
+        bool inQuote = false,
+             backslash = false,
+             inColonComma = false;
         for (; i < _string.size() - 1; i++)
         {
             bool resetBackslash = backslash;
@@ -229,21 +331,13 @@ namespace json
                 backslash = !backslash;
                 break;
             case '"':
-                if (!backslash && bracketLevel == 0)
+                if (!inColonComma && !backslash && bracesLevel == 0 && bracketsLevel == 0)
                 {
-                    inColonComa = false;
                     if (!inQuote)
                         tokStart = i;
-                    else if (first)
-                    {
-                        keyValPair.first = _string.substr(tokStart + 1, i - tokStart - 1);
-                        first = false;
-                    }
                     else
                     {
-                        keyValPair.second = _string.substr(tokStart, i - tokStart + 1);
-                        _data.insert(keyValPair);
-                        first = true;
+                        keyValPair.first = _string.substr(tokStart + 1, i - tokStart - 1);
                     }
 
                     inQuote = !inQuote;
@@ -251,67 +345,72 @@ namespace json
                 break;
             case '{':
                 if (!inQuote)
-                    bracketLevel++;
+                    bracesLevel++;
                 break;
             case '}':
                 if (!inQuote)
-                    bracketLevel--;
+                    bracesLevel--;
+                break;
+            case '[':
+                if (!inQuote)
+                    bracketsLevel++;
+                break;
+            case ']':
+                if (!inQuote)
+                    bracketsLevel--;
                 break;
             case ':':
-                if (!inQuote && bracketLevel == 0)
+                if (!inQuote && bracesLevel == 0 && bracketsLevel == 0)
                 {
-                    inColonComa = true;
+                    inColonComma = true;
                     tokStart = i + 1;
                 }
                 break;
             case ',':
-                if (inColonComa && bracketLevel == 0)
+                if (inColonComma && !inQuote && bracesLevel == 0 && bracketsLevel == 0)
                 {
-                    if (first)
-                    {
-                        keyValPair.first = _string.substr(tokStart, i - tokStart);
-                        first = false;
-                    }
-                    else
-                    {
-                        keyValPair.second = _string.substr(tokStart, i - tokStart);
-                        _data.insert(keyValPair);
-                        first = true;
-                    }
+                    std::cout << "substr(" << tokStart << ", " << i - tokStart << ") = " << _string.substr(tokStart, i - tokStart) << "\n";
+                    keyValPair.second = _string.substr(tokStart, i - tokStart);
+                    _data.insert(keyValPair);
+                    inColonComma = false;
                 }
             }
 
             if (resetBackslash)
                 backslash = false;
 
-            // std::cout << "\n"
-            //           << "\n"
-            //           << _string.substr(0, i + 1) << "\n"
-            //           << "First: " << first << "\n"
-            //           << "inQuote: " << inQuote << "\n"
-            //           << "KeyValPair: {" << keyValPair.first << ":" << keyValPair.second.getString() << "}\n";
-            // for (auto &e : _data)
-            // {
-            //     std::cout << e.first << ": " << e.second.getString() << "\n";
-            // }
-            // std::cin.get();
+            std::cout << "\n"
+                      << "\n"
+                      << _string.substr(0, i + 1) << "\n"
+                      << "inQuote: " << inQuote << "\n"
+                      << "inColonComma: " << inColonComma << "\n"
+                      << "[] - level: " << bracketsLevel << "\n"
+                      << "{} - level: " << bracesLevel << "\n"
+                      << "KeyValPair: {" << keyValPair.first << ":" << keyValPair.second.getString() << "}\n";
+            for (auto &e : _data)
+            {
+                std::cout << e.first << ": " << e.second.getString() << "\n";
+            }
+            std::cin.get();
         }
 
-        if (inColonComa)
+        if (inColonComma)
         {
             keyValPair.second = _string.substr(tokStart, i - tokStart);
             _data.insert(keyValPair);
         }
 
-        _flags |= _dataValid;
+        _flags |= _flagDataValid;
 
         return true;
     }
 
     bool JsonObject::_buildString()
     {
-        if (_flags | _stringValid)
+        if (_flags & _flagStringValid)
             return true;
+        if (!(_flags & _flagDataValid))
+            return false;
 
         std::ostringstream outStr;
 
@@ -329,7 +428,7 @@ namespace json
         outStr << '}';
 
         _string = outStr.str();
-        _flags |= _stringValid;
+        _flags |= _flagStringValid;
         return true;
     }
 
@@ -355,5 +454,11 @@ namespace json
         {
             std::cout << e.first << ": " << e.second.getString() << "\n";
         }
+    }
+
+    void JsonObject::dumpMetadata()
+    {
+        std::cout << "String valid: " << (_flags & _flagStringValid ? "YES" : "NO") << "\n"
+                  << "Data valid: " << (_flags & _flagDataValid ? "YES" : "NO") << "\n";
     }
 }

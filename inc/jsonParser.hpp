@@ -43,8 +43,8 @@ namespace json
     class JsonArray
     {
     private:
-        static const uint8_t _stringValid = 1 << 0;
-        static const uint8_t _dataValid = 1 << 1;
+        static const uint8_t _flagStringValid = 1 << 0;
+        static const uint8_t _flagDataValid = 1 << 1;
 
         uint8_t _flags;
         std::string _string;
@@ -65,8 +65,8 @@ namespace json
     class JsonObject
     {
     private:
-        static const uint8_t _stringValid = 1 << 0;
-        static const uint8_t _dataValid = 1 << 1;
+        static const uint8_t _flagStringValid = 1 << 0;
+        static const uint8_t _flagDataValid = 1 << 1;
 
         uint8_t _flags;
         std::string _string;
@@ -77,6 +77,8 @@ namespace json
 
     public:
         void dump();
+
+        void dumpMetadata();
 
         JsonObject();
         JsonObject(std::string str);
