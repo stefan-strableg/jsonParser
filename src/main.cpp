@@ -7,7 +7,6 @@ std::string _string = "{ \n\
     \"Herausgeber\": \"Xema\", \n\
     \"Nummer\": \"1234-5678-9012-3456\", \n\
     \"Deckung\": 2e+6, \n\
-    \"Waehrung\": \"EURO\", \n\
     \"Inhaber\": \n\
     { \n\
       \"Name\": \"Mustermann\", \n\
@@ -17,14 +16,15 @@ std::string _string = "{ \n\
       \"Alter\": 42, \n\
       \"Kinder\": [], \n\
       \"Partner\": null \n\
-    } \n\
+    }, \n\
+    \"Waehrung\": \"EURO\" \n\
   }";
 
 int main(void)
 {
     json::JsonObject jobj(_string);
 
-    std::cout << jobj.getString();
+    jobj.dump();
 
     return EXIT_SUCCESS;
 }
@@ -85,6 +85,7 @@ int main2(void)
             break;
         case ',':
             if (inColonComa && bracketLevel == 0)
+            {
                 if (first)
                 {
                     keyValPair.first = _string.substr(tokStart, i - tokStart);
@@ -97,6 +98,7 @@ int main2(void)
                     _data.push_back(keyValPair);
                     first = true;
                 }
+            }
         }
 
         if (resetBackslash)

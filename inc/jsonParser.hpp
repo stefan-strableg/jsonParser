@@ -10,13 +10,17 @@ namespace json
     class JsonObject;
     struct JsonItem
     {
-        enum : uint8_t
+    private:
+        void _freeValuePtr();
+
+    public:
+        enum JsonItemType : uint8_t
         {
-            error,
-            nonJson,
+            nonString,
+            string,
             object,
             array
-        } type = nonJson;
+        } type = string;
 
         void *valuePtr = nullptr;
 
@@ -27,7 +31,12 @@ namespace json
 
         JsonItem() = default;
         JsonItem(const std::string &str);
-        JsonItem(std::string &&str);
+        JsonItem(const JsonItem &other);
+        JsonItem(JsonItem &&other);
+
+        JsonItem &operator=(const JsonItem &other);
+        JsonItem &operator=(JsonItem &&other);
+
         ~JsonItem();
     };
 
@@ -48,6 +57,8 @@ namespace json
         JsonArray();
         JsonArray(std::string str);
 
+        std::string getString();
+
         JsonItem at(size_t n);
     };
 
@@ -61,23 +72,14 @@ namespace json
         std::string _string;
         std::map<std::string, JsonItem> _data;
 
-        template <typename... T, typename T1>
-        bool _parse(T1 item, T...);
-
-        template <typename T1>
-        bool _parse(T1 item);
-
         bool _buildMap();
         bool _buildString();
 
     public:
+        void dump();
+
         JsonObject();
         JsonObject(std::string str);
-
-        bool parse(const std::string &jsonString);
-
-        template <typename... T>
-        bool parse(T...);
 
         JsonItem get(std::string key);
 
