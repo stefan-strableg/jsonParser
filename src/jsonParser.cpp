@@ -221,17 +221,17 @@ namespace json
                     tokStart = i + 1;
                 }
             }
-            std::cout << "\n"
-                      << "\n"
-                      << _string.substr(0, i + 1) << "\n"
-                      << "inQuote: " << inQuote << "\n"
-                      << "[] - level: " << bracketsLevel << "\n"
-                      << "{} - level: " << bracesLevel << "\n";
-            for (auto &e : _data)
-            {
-                std::cout << e.getString() << "\n";
-            }
-            std::cin.get();
+            // std::cout << "\n"
+            //           << "\n"
+            //           << _string.substr(0, i + 1) << "\n"
+            //           << "inQuote: " << inQuote << "\n"
+            //           << "[] - level: " << bracketsLevel << "\n"
+            //           << "{} - level: " << bracesLevel << "\n";
+            // for (auto &e : _data)
+            // {
+            //     std::cout << e.getString() << "\n";
+            // }
+            // std::cin.get();
 
             if (resetBackslash)
                 backslash = false;
@@ -278,7 +278,7 @@ namespace json
         return _string;
     }
 
-    JsonItem JsonArray::at(size_t n)
+    JsonItem JsonArray::_at(size_t n)
     {
         if (!_buildMap())
             return JsonItem();
@@ -286,6 +286,51 @@ namespace json
             return JsonItem();
 
         return _data[n];
+    }
+
+    template <typename T>
+    T JsonArray::get(size_t n)
+    {
+        return strn::string_to<T>(_at(n).getString());
+    }
+
+    template <>
+    std::string JsonArray::get(size_t n)
+    {
+        return _at(n).getString();
+    }
+
+    template <>
+    JsonArray JsonArray::get(size_t n)
+    {
+        auto item = _at(n);
+        if (item.type != JsonItem::JsonItemType::array)
+            return JsonArray();
+        return *static_cast<JsonArray *>(item.valuePtr);
+    }
+
+    template <>
+    JsonObject JsonArray::get(size_t n)
+    {
+        auto item = _at(n);
+        if (item.type != JsonItem::JsonItemType::object)
+            return JsonObject();
+        return *static_cast<JsonObject *>(item.valuePtr);
+    }
+
+    JsonArray JsonArray::getA(size_t n)
+    {
+        return get<JsonArray>(n);
+    }
+
+    JsonObject JsonArray::getO(size_t n)
+    {
+        return get<JsonObject>(n);
+    }
+
+    std::string JsonArray::getS(size_t n)
+    {
+        return get<std::string>(n);
     }
 
     JsonObject::JsonObject()
@@ -369,7 +414,6 @@ namespace json
             case ',':
                 if (inColonComma && !inQuote && bracesLevel == 0 && bracketsLevel == 0)
                 {
-                    std::cout << "substr(" << tokStart << ", " << i - tokStart << ") = " << _string.substr(tokStart, i - tokStart) << "\n";
                     keyValPair.second = _string.substr(tokStart, i - tokStart);
                     _data.insert(keyValPair);
                     inColonComma = false;
@@ -379,19 +423,19 @@ namespace json
             if (resetBackslash)
                 backslash = false;
 
-            std::cout << "\n"
-                      << "\n"
-                      << _string.substr(0, i + 1) << "\n"
-                      << "inQuote: " << inQuote << "\n"
-                      << "inColonComma: " << inColonComma << "\n"
-                      << "[] - level: " << bracketsLevel << "\n"
-                      << "{} - level: " << bracesLevel << "\n"
-                      << "KeyValPair: {" << keyValPair.first << ":" << keyValPair.second.getString() << "}\n";
-            for (auto &e : _data)
-            {
-                std::cout << e.first << ": " << e.second.getString() << "\n";
-            }
-            std::cin.get();
+            // std::cout << "\n"
+            //           << "\n"
+            //           << _string.substr(0, i + 1) << "\n"
+            //           << "inQuote: " << inQuote << "\n"
+            //           << "inColonComma: " << inColonComma << "\n"
+            //           << "[] - level: " << bracketsLevel << "\n"
+            //           << "{} - level: " << bracesLevel << "\n"
+            //           << "KeyValPair: {" << keyValPair.first << ":" << keyValPair.second.getString() << "}\n";
+            // for (auto &e : _data)
+            // {
+            //     std::cout << e.first << ": " << e.second.getString() << "\n";
+            // }
+            // std::cin.get();
         }
 
         if (inColonComma)
@@ -432,11 +476,56 @@ namespace json
         return true;
     }
 
-    JsonItem JsonObject::get(std::string key)
+    template <typename T>
+    T JsonObject::get(std::string key)
     {
-        if (_data.contains(key))
-            return _data[key];
-        return JsonItem();
+        if (!_data.contains(key))
+            return T();
+        return strn::string_to<T>(_data[key].getString());
+    }
+
+    template <>
+    std::string JsonObject::get(std::string key)
+    {
+        if (!_data.contains(key))
+            return "";
+
+        return _data[key].getString();
+    }
+
+    template <>
+    JsonArray JsonObject::get(std::string key)
+    {
+        if (!_data.contains(key))
+            return JsonArray();
+        if (_data[key].type != JsonItem::JsonItemType::array)
+            return JsonArray();
+        return *static_cast<JsonArray *>(_data[key].valuePtr);
+    }
+
+    template <>
+    JsonObject JsonObject::get(std::string key)
+    {
+        if (!_data.contains(key))
+            return JsonObject();
+        if (_data[key].type != JsonItem::JsonItemType::object)
+            return JsonObject();
+        return *static_cast<JsonObject *>(_data[key].valuePtr);
+    }
+
+    JsonArray JsonObject::getA(std::string key)
+    {
+        return get<JsonArray>(key);
+    }
+
+    JsonObject JsonObject::getO(std::string key)
+    {
+        return get<JsonObject>(key);
+    }
+
+    std::string JsonObject::getS(std::string key)
+    {
+        return get<std::string>(key);
     }
 
     std::string JsonObject::getString()

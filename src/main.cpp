@@ -25,9 +25,12 @@ std::string jsonArrayString = "[\"Ch [] [ [] late\"    ,        42, 6.9, [true, 
 
 int main(void)
 {
-    json::JsonObject jobj(_string);
+  json::JsonObject jobj(_string);
 
-    std::cout << jobj.getString() << "\n";
+  // std::cout << jobj.getString() << "\n";
 
-    return EXIT_SUCCESS;
+  std::cout << jobj.getS("Herausgeber") << "\n";
+  std::cout << jobj.getA("Hobbys1").getS(1) << "\n";
+
+  return EXIT_SUCCESS;
 }

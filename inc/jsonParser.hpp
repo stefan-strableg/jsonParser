@@ -53,13 +53,20 @@ namespace json
         bool _buildMap();
         bool _buildString();
 
+        JsonItem _at(size_t n);
+
     public:
         JsonArray();
         JsonArray(std::string str);
 
-        std::string getString();
+        template <typename T>
+        T get(size_t n);
 
-        JsonItem at(size_t n);
+        JsonArray getA(size_t n);
+        JsonObject getO(size_t n);
+        std::string getS(size_t n);
+
+        std::string getString();
     };
 
     class JsonObject
@@ -83,7 +90,12 @@ namespace json
         JsonObject();
         JsonObject(std::string str);
 
-        JsonItem get(std::string key);
+        template <typename T>
+        T get(std::string key);
+
+        JsonArray getA(std::string key);
+        JsonObject getO(std::string key);
+        std::string getS(std::string key);
 
         std::string getString();
     };
