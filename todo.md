@@ -1,10 +1,3 @@
 # Up next
 
-* Remove flags
-* Create Modules for the classes
-* Make a base class for JsonArray and JsonObject
-
-* More **editing** methods for **JsonArray** (Insert, erase, ...)
-* *Read* directly from **file**
-* *Write* to **file**
-    * With option of **automatic formatting**
+* Fix Memory Leaks (Delete the Pointers in _data in both JsonArray and JsonObject when overwriting, deleting or deconstructing)

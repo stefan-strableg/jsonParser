@@ -240,7 +240,6 @@ namespace json
 
     void JsonArray::_validateString()
     {
-
         if (_flags & _flagStringValid)
             return;
         if (!(_flags & _flagMapValid))

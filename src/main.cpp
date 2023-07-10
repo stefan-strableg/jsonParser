@@ -1,6 +1,9 @@
 #include <cstdlib>
 #include <iostream>
-#include "../inc/jsonParser.hpp"
+#include "../inc/JsonArray.hpp"
+#include "../inc/JsonObject.hpp"
+#include "../inc/JsonInterface.hpp"
+#include "../inc/JsonValue.hpp"
 #include "../inc/string.hpp"
 
 std::string _string = "{ \n\
@@ -25,14 +28,12 @@ std::string jsonArrayString = "[\"Ch [] [ [] late\"    ,        42, 6.9, [true, 
 
 int main(void)
 {
-  json::JsonObject jobj(_string);
+  // json::JsonObject obj("{\"Hello\":4, \"obj\": { \"Hello2\": \"World2\"}}");
+  json::JsonObject obj("Hello", "\"World\"",
+                       "Number", 420,
+                       "Float", 7.2f);
 
-  // std::cout << jobj.getString() << "\n";
-
-  jobj.A("Hobbys1") = json::JsonArray("[1, 2, 3]");
-  jobj.O("Inhaber").A("Hobbys2").S(1) = "\"WOOOOOOHOOOOO\"";
-
-  std::cout << jobj.getString() << "\n";
+  std::cout << obj.getString() << "\n";
 
   return EXIT_SUCCESS;
 }
