@@ -1,6 +1,9 @@
 # Up next
 
-* Implement a system for **updating** the **flags** of parents
+* Remove flags
+* Create Modules for the classes
+* Make a base class for JsonArray and JsonObject
+
 * More **editing** methods for **JsonArray** (Insert, erase, ...)
 * *Read* directly from **file**
 * *Write* to **file**
