@@ -1,10 +1,6 @@
 #include <cstdlib>
 #include <iostream>
-#include "../inc/JsonArray.hpp"
-#include "../inc/JsonObject.hpp"
-#include "../inc/JsonInterface.hpp"
-#include "../inc/JsonValue.hpp"
-#include "../inc/string.hpp"
+#include "../inc/Json.hpp"
 
 std::string _string = "{ \n\
     \"Herausgeber\": \"Xema\", \n\

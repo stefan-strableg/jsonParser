@@ -30,14 +30,6 @@ namespace json
             _data.insert({key, JsonInterface::makeNew(inStr.str())});
         }
 
-        template <typename T>
-        inline void add(std::pair<std::string, T> keyVal)
-        {
-            std::ostringstream inStr;
-            inStr << keyVal.second;
-            _data.insert({keyVal.first, JsonInterface::makeNew(inStr.str())});
-        }
-
         template <typename T1, typename... Ts>
         inline JsonObject(std::string key, T1 value, Ts... ts)
             : JsonObject(ts...)

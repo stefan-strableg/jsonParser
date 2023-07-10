@@ -14,6 +14,22 @@ namespace json
         setString(str);
     }
 
+    template <>
+    inline void JsonObject::add(std::string key, JsonObject val)
+    {
+        _data.insert({key, JsonInterface::makeNew(val.getString())});
+    }
+    template <>
+    inline void JsonObject::add(std::string key, JsonArray val)
+    {
+        _data.insert({key, JsonInterface::makeNew(val.getString())});
+    }
+    template <>
+    inline void JsonObject::add(std::string key, JsonValue val)
+    {
+        _data.insert({key, JsonInterface::makeNew(val.getString())});
+    }
+
     void JsonObject::setString(std::string _string)
     {
         size_t i = 1,
