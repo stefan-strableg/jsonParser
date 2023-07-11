@@ -31,6 +31,10 @@ namespace json
             _data = outStr.str();
         }
 
+        size_t size() const override;
+
+        bool _isBottomLayer() const override;
+
         std::string getStringF(size_t tabs = 0, const JsonFormattingOptions &options = defaultJsonFormattingOptions) const override;
     };
 }
