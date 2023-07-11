@@ -30,5 +30,7 @@ namespace json
             outStr << val;
             _data = outStr.str();
         }
+
+        std::string getStringF(size_t tabs = 0, const JsonFormattingOptions &options = defaultJsonFormattingOptions) const override;
     };
 }

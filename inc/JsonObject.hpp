@@ -65,6 +65,8 @@ namespace json
         bool contains(std::string key);
         bool isEmpty();
 
+        std::string getStringF(size_t tabs = 0, const JsonFormattingOptions &options = defaultJsonFormattingOptions) const override;
+
         ~JsonObject();
     };
 

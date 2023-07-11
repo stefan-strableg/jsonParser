@@ -50,7 +50,14 @@ int main(void)
 
   obj.O("HelloObject").insert("HelloArray", json::JsonArray("\"yarrA\"", 7.5f, 351, "\"Cheese\""));
 
-  std::cout << obj.getString() << "\n";
+  json::JsonFormattingOptions options;
+  options.firstArrayBracketInNewLine = true;
+  options.firstObjectBraceInNewLine = true;
+  options.spaceAfterColon = false;
+  options.spaceBeforeColon = false;
+
+  std::cout << "Heres the object:\n"
+            << obj.getStringF(0, options) << "\n";
 
   return EXIT_SUCCESS;
 }

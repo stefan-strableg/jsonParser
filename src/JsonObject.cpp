@@ -256,6 +256,37 @@ namespace json
         return _data.empty();
     }
 
+    std::string JsonObject::getStringF(size_t tabs, const JsonFormattingOptions &options) const
+    {
+        std::ostringstream outStr;
+        if (options.firstObjectBraceInNewLine && tabs != 0)
+        {
+            outStr << '\n'
+                   << options.getTab(tabs);
+        }
+
+        outStr << "{\n";
+        tabs++;
+
+        size_t i = 0;
+        for (auto &e : _data)
+        {
+            i++;
+            outStr << options.getTab(tabs) << '\"' << e.first << '\"'
+                   << (options.spaceBeforeColon ? " " : "")
+                   << ':'
+                   << (options.spaceAfterColon ? " " : "")
+                   << e.second->getStringF(tabs, options);
+            if (i < _data.size())
+                outStr << ',';
+            outStr << '\n';
+        }
+
+        outStr << (tabs != 0 ? options.getTab(tabs - 1) : "") << '}';
+
+        return outStr.str();
+    }
+
     JsonObject::~JsonObject()
     {
         for (auto &item : _data)

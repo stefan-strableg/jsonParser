@@ -18,4 +18,9 @@ namespace json
     {
         return _data;
     }
+
+    std::string JsonValue::getStringF(size_t tabs, const JsonFormattingOptions &options) const
+    {
+        return _data;
+    }
 }

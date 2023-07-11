@@ -6,6 +6,8 @@
 
 namespace json
 {
+    JsonFormattingOptions defaultJsonFormattingOptions;
+
     JsonInterface::JsonInterface(JsonInterfaceType t)
         : type(t)
     {

@@ -69,6 +69,8 @@ namespace json
             _data.push_back(JsonInterface::makeNew(inStr.str()));
         }
 
+        std::string getStringF(size_t tabs = 0, const JsonFormattingOptions &options = defaultJsonFormattingOptions) const override;
+
         ~JsonArray();
     };
 
