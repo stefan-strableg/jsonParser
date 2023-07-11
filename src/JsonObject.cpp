@@ -7,6 +7,10 @@
 
 namespace json
 {
+    JsonObject::JsonObject()
+        : JsonInterface(JsonInterfaceType::object)
+    {
+    }
 
     JsonObject::JsonObject(std::string str)
         : JsonInterface(JsonInterfaceType::object)
@@ -14,24 +18,72 @@ namespace json
         setString(str);
     }
 
-    template <>
-    inline void JsonObject::add(std::string key, JsonObject val)
+    JsonObject::JsonObject(const JsonObject &other)
+        : JsonObject()
     {
-        _data.insert({key, JsonInterface::makeNew(val.getString())});
+        _data.clear();
+        for (const auto &item : other._data)
+        {
+            _data.insert({item.first, JsonInterface::makeNew(item.second->getString())});
+        }
     }
-    template <>
-    inline void JsonObject::add(std::string key, JsonArray val)
+
+    JsonObject::JsonObject(JsonObject &&other)
+        : JsonObject()
     {
-        _data.insert({key, JsonInterface::makeNew(val.getString())});
+        _data.clear();
+        for (auto &item : other._data)
+        {
+            _data.insert(item);
+            item.second = nullptr;
+        }
     }
-    template <>
-    inline void JsonObject::add(std::string key, JsonValue val)
+
+    JsonObject &JsonObject::operator=(const JsonObject &other)
     {
-        _data.insert({key, JsonInterface::makeNew(val.getString())});
+        if (this == &other)
+            return *this;
+
+        for (auto &item : _data)
+        {
+            delete item.second;
+        }
+
+        _data.clear();
+
+        for (const auto &item : other._data)
+        {
+            _data.insert({item.first, JsonInterface::makeNew(item.second->getString())});
+        }
+        return *this;
+    }
+
+    JsonObject &JsonObject::operator=(JsonObject &&other)
+    {
+        for (auto &item : _data)
+        {
+            delete item.second;
+        }
+
+        _data.clear();
+
+        for (auto &item : other._data)
+        {
+            _data.insert(item);
+            item.second = nullptr;
+        }
+
+        return *this;
     }
 
     void JsonObject::setString(std::string _string)
     {
+        for (auto &item : _data)
+        {
+            delete item.second;
+        }
+        _data.clear();
+
         size_t i = 1,
                tokStart = 1;
         uint16_t bracesLevel = 0,
@@ -147,7 +199,7 @@ namespace json
     {
         if (!_data.contains(key))
             throw std::out_of_range("JsonObject::V: there is no element with key " + key);
-        if (_data[key]->_getType() != JsonInterfaceType::object)
+        if (_data[key]->_getType() != JsonInterfaceType::value)
             throw std::runtime_error("JsonObject::V: Value of element with key " + key + " is not of type value");
         return dynamic_cast<JsonValue &>(*_data[key]);
     }
@@ -159,6 +211,32 @@ namespace json
         if (_data[key]->_getType() != JsonInterfaceType::value)
             throw std::runtime_error("JsonObject::S: Value of element with key " + key + " is not of type string");
         return _data[key]->getString();
+    }
+
+    std::string JsonObject::getType(std::string key)
+    {
+        if (!_data.contains(key))
+            throw std::runtime_error("JsonObject::getType: there is no element with key " + key);
+
+        switch (_data[key]->_getType())
+        {
+        case JsonInterfaceType::array:
+            return "array";
+        case JsonInterfaceType::object:
+            return "object";
+        case JsonInterfaceType::value:
+            return "value";
+        }
+
+        return "invalid type";
+    }
+
+    void JsonObject::remove(std::string key)
+    {
+        if (!_data.contains(key))
+            return;
+        delete _data[key];
+        _data.erase(key);
     }
 
     bool JsonObject::isNull(std::string key)
@@ -176,6 +254,14 @@ namespace json
     bool JsonObject::isEmpty()
     {
         return _data.empty();
+    }
+
+    JsonObject::~JsonObject()
+    {
+        for (auto &item : _data)
+        {
+            delete item.second;
+        }
     }
 
 }

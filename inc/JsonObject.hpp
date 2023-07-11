@@ -16,15 +16,18 @@ namespace json
         std::map<std::string, JsonInterface *> _data;
 
     public:
-        JsonObject()
-            : JsonInterface(JsonInterfaceType::object)
-        {
-        }
+        JsonObject();
+
         JsonObject(std::string str);
+        JsonObject(const JsonObject &other);
+        JsonObject(JsonObject &&other);
+        JsonObject &operator=(const JsonObject &other);
+        JsonObject &operator=(JsonObject &&other);
 
         template <typename T>
-        inline void add(std::string key, T val)
+        inline void insert(std::string key, T val)
         {
+            remove(key);
             std::ostringstream inStr;
             inStr << val;
             _data.insert({key, JsonInterface::makeNew(inStr.str())});
@@ -34,7 +37,7 @@ namespace json
         inline JsonObject(std::string key, T1 value, Ts... ts)
             : JsonObject(ts...)
         {
-            add(key, value);
+            insert(key, value);
         }
 
         void setString(std::string str) override;
@@ -46,17 +49,23 @@ namespace json
         JsonValue &V(std::string key);
         std::string S(std::string key);
 
+        std::string getType(std::string key);
+
         template <typename T>
-        T get(std::string key)
+        inline T get(std::string key)
         {
             if (!_data.contains(key))
                 return T();
             return strn::string_to<T>(_data[key]->getString());
         }
 
+        void remove(std::string key);
+
         bool isNull(std::string key);
         bool contains(std::string key);
         bool isEmpty();
+
+        ~JsonObject();
     };
 
 }

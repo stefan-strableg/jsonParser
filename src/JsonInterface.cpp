@@ -32,4 +32,14 @@ namespace json
     {
         return type;
     }
+
+    JsonInterface::~JsonInterface()
+    {
+    }
+}
+
+std::ostream &operator<<(std::ostream &os, const json::JsonInterface &j)
+{
+    os << j.getString();
+    return os;
 }

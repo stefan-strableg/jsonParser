@@ -25,9 +25,30 @@ std::string jsonArrayString = "[\"Ch [] [ [] late\"    ,        42, 6.9, [true, 
 int main(void)
 {
   // json::JsonObject obj("{\"Hello\":4, \"obj\": { \"Hello2\": \"World2\"}}");
+
   json::JsonObject obj("Hello", "\"World\"",
                        "Number", 420,
                        "Float", 7.2f);
+
+  std::cout << obj.getString() << "\n";
+
+  obj.V("Number").set(69);
+
+  std::cout << obj.getString() << "\n";
+
+  obj.remove("Hello");
+
+  std::cout << obj.getString() << "\n";
+
+  obj.insert("HelloObject", "null");
+
+  std::cout << obj.getString() << "\n";
+
+  obj.insert("HelloObject", json::JsonObject("Hello", "\"From inside Object\""));
+
+  std::cout << obj.getString() << "\n";
+
+  obj.O("HelloObject").insert("HelloArray", json::JsonArray("\"yarrA\"", 7.5f, 351, "\"Cheese\""));
 
   std::cout << obj.getString() << "\n";
 

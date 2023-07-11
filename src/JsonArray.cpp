@@ -6,10 +6,72 @@
 
 namespace json
 {
-    JsonArray::JsonArray(std::string str)
+
+    JsonArray::JsonArray()
         : JsonInterface(JsonInterfaceType::array)
     {
+    }
+
+    JsonArray::JsonArray(std::string str)
+        : JsonArray()
+    {
         setString(str);
+    }
+
+    JsonArray::JsonArray(const JsonArray &other)
+        : JsonArray()
+    {
+        _data.clear();
+        for (const auto &item : other._data)
+        {
+            _data.push_back(JsonInterface::makeNew(item->getString()));
+        }
+    }
+
+    JsonArray::JsonArray(JsonArray &&other)
+        : JsonArray()
+    {
+        _data.clear();
+        for (auto &item : other._data)
+        {
+            _data.push_back(item);
+            item = nullptr;
+        }
+    }
+
+    JsonArray &JsonArray::operator=(const JsonArray &other)
+    {
+        if (this == &other)
+            return *this;
+
+        for (auto &item : _data)
+        {
+            delete item;
+        }
+
+        _data.clear();
+
+        for (const auto &item : other._data)
+        {
+            _data.push_back({JsonInterface::makeNew(item->getString())});
+        }
+        return *this;
+    }
+
+    JsonArray &JsonArray::operator=(JsonArray &&other)
+    {
+        for (auto &item : _data)
+        {
+            delete item;
+        }
+
+        _data.clear();
+
+        for (const auto &item : other._data)
+        {
+            _data.push_back(item);
+        }
+        return *this;
     }
 
     void JsonArray::setString(std::string jsonString)
@@ -118,5 +180,30 @@ namespace json
         if (_data[n]->_getType() != JsonInterfaceType::value)
             throw std::runtime_error("JsonArray::S: Element " + std::to_string(n) + " is not of type string");
         return _data[n]->getString();
+    }
+
+    std::string JsonArray::getType(size_t n)
+    {
+        if (_data.size() <= n)
+            throw std::out_of_range("JsonArray::getType index " + std::to_string(n) + " is out of bounds");
+
+        switch (_data[n]->_getType())
+        {
+        case JsonInterfaceType::array:
+            return "array";
+        case JsonInterfaceType::object:
+            return "object";
+        case JsonInterfaceType::value:
+            return "value";
+        }
+        return "invalid type";
+    }
+
+    JsonArray::~JsonArray()
+    {
+        for (const auto &item : _data)
+        {
+            delete item;
+        }
     }
 }

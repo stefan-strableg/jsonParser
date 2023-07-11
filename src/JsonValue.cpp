@@ -18,10 +18,4 @@ namespace json
     {
         return _data;
     }
-
-    template <typename T>
-    T JsonValue::get()
-    {
-        return strn::string_to<T>(_data);
-    }
 }

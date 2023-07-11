@@ -24,5 +24,9 @@ namespace json
         virtual std::string getString() const = 0;
 
         JsonInterface::JsonInterfaceType _getType();
+
+        virtual ~JsonInterface();
     };
 }
+
+std::ostream &operator<<(std::ostream &os, const json::JsonInterface &j);

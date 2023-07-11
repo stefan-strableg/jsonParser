@@ -23,6 +23,13 @@ main: $(OBJ_PATH) $(INC_PATH)
 $(ODIR)/%.o: $(SDIR)/%.cpp
 	$(CC) $(CFLAGS) -c -o $@ $<
 
-.PHONY: clean
+.PHONY: clean run
+
 clean:
-	del /f /q bin\* obj\*
+	rm -f $(BIN_PATH)
+	rm -f $(OBJ_PATH)
+
+run: main
+	cmd /c .\bin\main
+	
+
