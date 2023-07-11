@@ -56,7 +56,6 @@ namespace strn
     [[nodiscard]] size_t find(const std::string &str, char c, size_t n);
 
     /// @brief Returns the nth token (substring) of a string that is seperated into tokens by a seperator character. Note that is null-indexed so that N = 0 returns the first element
-    /// @example ";Hello;beautiful;World;" would result in the tokens "", "Hello", "beautiful", "World", and ""
     /// @return nth token
     [[nodiscard]] std::string token(const std::string &str, char seperator, size_t n);
 

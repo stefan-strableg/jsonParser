@@ -19,6 +19,16 @@ namespace json
         return _data;
     }
 
+    size_t JsonValue::size() const
+    {
+        return 1;
+    }
+
+    bool JsonValue::_isBottomLayer() const
+    {
+        return true;
+    }
+
     std::string JsonValue::getStringF(size_t tabs, const JsonFormattingOptions &options) const
     {
         return _data;

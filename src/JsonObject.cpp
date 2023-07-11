@@ -4,6 +4,7 @@
 #include "../inc/string.hpp"
 #include <iostream>
 #include <sstream>
+#include <fstream>
 
 namespace json
 {
@@ -177,6 +178,26 @@ namespace json
         return outStr.str();
     }
 
+    bool JsonObject::readFromFile(std::string path)
+    {
+        std::ifstream inFile(path);
+        if (!inFile.is_open())
+            return false;
+        std::string inFileContents((std::istreambuf_iterator<char>(inFile)),
+                                   (std::istreambuf_iterator<char>()));
+        setString(inFileContents);
+        return true;
+    }
+
+    bool JsonObject::writeToFile(std::string path)
+    {
+        std::ofstream outFile(path);
+        if (!outFile.is_open())
+            return false;
+        outFile << getString();
+        return true;
+    }
+
     JsonArray &JsonObject::A(std::string key)
     {
         if (!_data.contains(key))
@@ -239,6 +260,11 @@ namespace json
         _data.erase(key);
     }
 
+    size_t JsonObject::size() const
+    {
+        return _data.size();
+    }
+
     bool JsonObject::isNull(std::string key)
     {
         if (!_data.contains(key))
@@ -256,33 +282,59 @@ namespace json
         return _data.empty();
     }
 
+    bool JsonObject::_isBottomLayer() const
+    {
+        for (const auto &e : _data)
+        {
+            if (e.second->_getType() == JsonInterfaceType::object || e.second->_getType() == JsonInterfaceType::array)
+                return false;
+        }
+        return true;
+    }
+
     std::string JsonObject::getStringF(size_t tabs, const JsonFormattingOptions &options) const
     {
         std::ostringstream outStr;
-        if (options.firstObjectBraceInNewLine && tabs != 0)
+        bool isInline = options.forceInline || (options.inlineBottomLevelObjects && _isBottomLayer() && getString().size() < options.maxLengthToInline);
+
+        if (!isInline && options.firstObjectBraceInNewLine && tabs != 0)
         {
             outStr << '\n'
                    << options.getTab(tabs);
         }
 
-        outStr << "{\n";
+        outStr << '{';
+
+        if (!isInline)
+            outStr << '\n';
+
         tabs++;
 
         size_t i = 0;
         for (auto &e : _data)
         {
             i++;
-            outStr << options.getTab(tabs) << '\"' << e.first << '\"'
-                   << (options.spaceBeforeColon ? " " : "")
+            if (!isInline)
+                outStr << options.getTab(tabs);
+
+            outStr << '\"' << e.first << '\"'
+                   << (options.spaceBeforeColon && !isInline ? " " : "")
                    << ':'
-                   << (options.spaceAfterColon ? " " : "")
-                   << e.second->getStringF(tabs, options);
+                   << (options.spaceAfterColon && !isInline ? " " : "");
+
+            outStr << e.second->getStringF(tabs, options);
+
             if (i < _data.size())
                 outStr << ',';
-            outStr << '\n';
+
+            if (!isInline)
+                outStr << '\n';
         }
 
-        outStr << (tabs != 0 ? options.getTab(tabs - 1) : "") << '}';
+        if (!isInline)
+            outStr << (tabs != 0 ? options.getTab(tabs - 1) : "");
+
+        outStr << '}';
 
         return outStr.str();
     }

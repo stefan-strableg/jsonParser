@@ -35,6 +35,11 @@ namespace json
         return type;
     }
 
+    size_t JsonInterface::size() const
+    {
+        return 1;
+    }
+
     JsonInterface::~JsonInterface()
     {
     }

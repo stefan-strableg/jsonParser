@@ -4,16 +4,29 @@
 
 namespace json
 {
+    /// @brief Options to control the output of getStringF()
     struct JsonFormattingOptions
     {
-        bool firstObjectBraceInNewLine = true;
-        bool firstArrayBracketInNewLine = true;
-        bool inlineArraysWhenPossible = false;  // NYI
-        bool inlineObjectsWhenPossible = false; // NYI
-        bool spaceBeforeColon = true;
+        /// @brief Sets the first Brace of Objects to be in the next line, at the same indentation as the key
+        bool firstObjectBraceInNewLine = false;
+        /// @brief Sets the first Bracket of Arrays to be in the next line, at the same indentation as the key
+        bool firstArrayBracketInNewLine = false;
+        /// @brief Inlines arrays if the contain no objects or arrays
+        bool inlineBottomLevelArrays = true;
+        /// @brief Inlines objects if the contain no objects or arrays
+        bool inlineBottomLevelObjects = true;
+        /// @brief Only inlines objects that are below this character limit (to avoid long lines)
+        size_t maxLengthToInline = 50;
+        /// @brief Whether to put a space before colons in objects
+        bool spaceBeforeColon = false;
+        /// @brief Whether to put a space after colons in objects
         bool spaceAfterColon = true;
-        bool spaceAfterComma = true; // NYI because inlineArraysWhenPossible is also NYI
-        uint8_t tabSpaces = 2;       // 0 means use '\t' instead of spaces
+        /// @brief Whether to put a space after colons in arrays when inlining
+        bool spaceAfterComma = true;
+        /// @brief Forces the entire output to be inline
+        bool forceInline = false;
+        /// @brief How many spaces to use as a tab. Set to 0 to instead use a '\t'
+        uint8_t tabSpaces = 2;
 
         inline std::string getTab(uint8_t tabs) const
         {
@@ -26,6 +39,7 @@ namespace json
 
     extern JsonFormattingOptions defaultJsonFormattingOptions;
 
+    /// @brief Base class for all Json-items
     class JsonInterface
     {
     protected:
@@ -37,18 +51,33 @@ namespace json
         } type;
 
     public:
+        /// @brief [Library internal] Creates a new Json-item and returns a pointer to it.
         static JsonInterface *makeNew(std::string str);
 
+        /// @brief Parameterized Constructor
         JsonInterface(JsonInterfaceType t);
 
+        /// @brief Set the JSON-string the object represents
         virtual void setString(std::string str) = 0;
 
+        /// @brief Get the JSON-string the object represents
         virtual std::string getString() const = 0;
 
+        /// @brief Returns a formatted string.
+        /// @param tabs At how many tabs to start. Usually zero.
+        /// @param options Formatting options.
         virtual std::string getStringF(size_t tabs = 0, const JsonFormattingOptions &options = defaultJsonFormattingOptions) const = 0;
 
+        /// @brief [library internal] Returns the type of the Json-item
+        /// @return
         JsonInterface::JsonInterfaceType _getType();
 
+        /// @brief [library internal] Returns true when the array does not contain any arrays or objects.
+        virtual bool _isBottomLayer() const = 0;
+
+        virtual size_t size() const;
+
+        /// @brief Deconstructor
         virtual ~JsonInterface();
     };
 }

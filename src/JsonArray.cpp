@@ -199,28 +199,61 @@ namespace json
         return "invalid type";
     }
 
+    size_t JsonArray::size() const
+    {
+        return _data.size();
+    }
+
+    bool JsonArray::_isBottomLayer() const
+    {
+        for (const auto &e : _data)
+        {
+            if (e->_getType() == JsonInterfaceType::object || e->_getType() == JsonInterfaceType::array)
+                return false;
+        }
+        return true;
+    }
+
     std::string JsonArray::getStringF(size_t tabs, const JsonFormattingOptions &options) const
     {
         std::ostringstream outStr;
+        bool isInline = options.forceInline || (options.inlineBottomLevelArrays && _isBottomLayer() && getString().size() < options.maxLengthToInline);
 
-        if (options.firstArrayBracketInNewLine && tabs != 0)
+        if (!isInline && options.firstArrayBracketInNewLine && tabs != 0)
             outStr << '\n'
                    << options.getTab(tabs);
 
-        outStr << "[\n";
+        outStr << '[';
+
+        if (!isInline)
+            outStr << '\n';
+
         tabs++;
 
         size_t i = 0;
         for (auto &e : _data)
         {
             i++;
-            outStr << options.getTab(tabs) << e->getStringF(tabs, options);
+
+            if (!isInline)
+                outStr << options.getTab(tabs);
+
+            outStr << e->getStringF(tabs, options);
+
             if (i < _data.size())
+            {
                 outStr << ',';
-            outStr << '\n';
+                if (options.spaceAfterComma && isInline)
+                    outStr << ' ';
+            }
+            if (!isInline)
+                outStr << '\n';
         }
 
-        outStr << (tabs != 0 ? options.getTab(tabs - 1) : "") << ']';
+        if (!isInline)
+            outStr << (tabs != 0 ? options.getTab(tabs - 1) : "");
+
+        outStr << ']';
 
         return outStr.str();
     }
