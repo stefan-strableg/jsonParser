@@ -10,5 +10,10 @@ int main(void)
   options.inlineBottomLevelObjects = false;
   options.firstBracketInNewline = true;
 
+  json::JsonObject jobj;
+  jobj.readFromFile("data/example.json");
+
+  std::cout << jobj.getStringF();
+
   return EXIT_SUCCESS;
 }

@@ -53,28 +53,28 @@ namespace json
 
         /// @brief Get the JSON-String the array represents
         /// @note Use getStringF() for a formatted and more readable JSON-String
-        std::string getString() const override;
+        [[nodiscard]] std::string getString() const override;
 
         /// @brief Returns the nth item in the array as an array. Throws a std::runtime_error if the nth item is not an of another type.
-        JsonArray &A(size_t n);
+        [[nodiscard]] JsonArray &A(size_t n);
         /// @brief Returns the nth item in the array as an object. Throws a std::runtime_error if the nth item is not an of another type.
-        JsonObject &O(size_t n);
+        [[nodiscard]] JsonObject &O(size_t n);
         /// @brief Returns the nth item in the array as a value. Throws a std::runtime_error if the nth item is not an of another type.
-        JsonValue &V(size_t n);
+        [[nodiscard]] JsonValue &V(size_t n);
         /// @brief Returns the nth item in the array as a compact string.
-        std::string S(size_t n);
+        [[nodiscard]] std::string S(size_t n) const;
 
         /// @brief Returns the type of the nth item in the array.
         /// @return "Array", "Object" or "Value"
-        std::string getType(size_t n);
+        [[nodiscard]] std::string getType(size_t n) const;
 
         /// @brief Returns the number of items in the array
-        size_t size() const override;
+        [[nodiscard]] size_t size() const override;
 
         /// @brief Gets the nth item in the array.
         /// @tparam T Type of the item. (Converted from string via operator<<(std::ostream&, std::string))
         template <typename T>
-        inline T get(size_t n)
+        [[nodiscard]] inline T get(size_t n) const
         {
             if (_data.size() <= n)
                 return T();
@@ -91,12 +91,12 @@ namespace json
         }
 
         /// @brief [library internal] Returns true when the array does not contain any arrays or objects.
-        bool _isBottomLayer() const override;
+        [[nodiscard]] bool _isBottomLayer() const override;
 
         /// @brief Returns a formatted string.
         /// @param tabs At how many tabs to start. Usually zero.
         /// @param options Formatting options.
-        std::string getStringF(const JsonFormattingOptions &options = defaultJsonFormattingOptions, size_t tabs = 0) const override;
+        [[nodiscard]] std::string getStringF(const JsonFormattingOptions &options = defaultJsonFormattingOptions, size_t tabs = 0) const override;
 
         /// @brief Deconstructor
         ~JsonArray();

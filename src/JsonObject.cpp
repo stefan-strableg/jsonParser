@@ -189,7 +189,7 @@ namespace json
         return true;
     }
 
-    bool JsonObject::writeToFile(std::string path, JsonFormattingOptions options)
+    bool JsonObject::writeToFile(std::string path, JsonFormattingOptions options) const
     {
         std::ofstream outFile(path);
         if (!outFile.is_open())
@@ -225,21 +225,21 @@ namespace json
         return dynamic_cast<JsonValue &>(*_data[key]);
     }
 
-    std::string JsonObject::S(std::string key)
+    std::string JsonObject::S(std::string key) const
     {
         if (!_data.contains(key))
             throw std::out_of_range("JsonObject::S: there is no element with key " + key);
-        if (_data[key]->_getType() != JsonInterfaceType::value)
+        if (_data.at(key)->_getType() != JsonInterfaceType::value)
             throw std::runtime_error("JsonObject::S: Value of element with key " + key + " is not of type string");
-        return _data[key]->getString();
+        return _data.at(key)->getString();
     }
 
-    std::string JsonObject::getType(std::string key)
+    std::string JsonObject::getType(std::string key) const
     {
         if (!_data.contains(key))
             throw std::runtime_error("JsonObject::getType: there is no element with key " + key);
 
-        switch (_data[key]->_getType())
+        switch (_data.at(key)->_getType())
         {
         case JsonInterfaceType::array:
             return "array";
@@ -265,19 +265,19 @@ namespace json
         return _data.size();
     }
 
-    bool JsonObject::isNull(std::string key)
+    bool JsonObject::isNull(std::string key) const
     {
         if (!_data.contains(key))
             throw std::runtime_error("JsonObject::isNull: there is no element with key " + key);
-        return _data[key]->getString() == "null";
+        return _data.at(key)->getString() == "null";
     }
 
-    bool JsonObject::contains(std::string key)
+    bool JsonObject::contains(std::string key) const
     {
         return _data.contains(key);
     }
 
-    bool JsonObject::isEmpty()
+    bool JsonObject::isEmpty() const
     {
         return _data.empty();
     }
@@ -300,7 +300,7 @@ namespace json
         // if (!isInline && options.firstBracketInNewline && tabs != 0)
         // {
         //     outStr << '\n'
-        //            << options.getTab(tabs);
+        //            << options._getTab(tabs);
         // }
 
         outStr << '{';
@@ -318,7 +318,7 @@ namespace json
         {
             i++;
             if (!isInline)
-                outStr << options.getTab(tabs);
+                outStr << options._getTab(tabs);
 
             outStr << '\"' << e.first << '\"'
                    << (options.spaceBeforeColon ? " " : "")
@@ -327,7 +327,7 @@ namespace json
 
             if (!isInline && options.firstBracketInNewline && e.second->_getType() != JsonInterfaceType::value)
                 outStr << '\n'
-                       << options.getTab(tabs);
+                       << options._getTab(tabs);
             outStr << e.second->getStringF(options, tabs);
 
             if (i < _data.size())
@@ -342,7 +342,7 @@ namespace json
         }
 
         if (!isInline && options.lastBracketInNewline)
-            outStr << (tabs != 0 ? options.getTab(tabs - 1) : "");
+            outStr << (tabs != 0 ? options._getTab(tabs - 1) : "");
 
         if (isInline && options.spaceAfterOpeningBeforeClosingBrackets)
             outStr << ' ';

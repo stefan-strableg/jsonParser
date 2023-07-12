@@ -167,16 +167,16 @@ namespace json
         return dynamic_cast<JsonValue &>(*_data[n]);
     }
 
-    std::string JsonArray::S(size_t n)
+    std::string JsonArray::S(size_t n) const
     {
         if (_data.size() <= n)
             throw std::out_of_range("JsonArray::S: index " + std::to_string(n) + " is out of bounds");
-        if (_data[n]->_getType() != JsonInterfaceType::value)
+        if (_data.at(n)->_getType() != JsonInterfaceType::value)
             throw std::runtime_error("JsonArray::S: Element " + std::to_string(n) + " is not of type string");
-        return _data[n]->getString();
+        return _data.at(n)->getString();
     }
 
-    std::string JsonArray::getType(size_t n)
+    std::string JsonArray::getType(size_t n) const
     {
         if (_data.size() <= n)
             throw std::out_of_range("JsonArray::getType index " + std::to_string(n) + " is out of bounds");
@@ -215,7 +215,7 @@ namespace json
 
         // if (!isInline && (options.firstBracketInNewline) && tabs != 0)
         //     outStr << '\n'
-        //            << options.getTab(tabs);
+        //            << options._getTab(tabs);
 
         outStr << '[';
 
@@ -233,11 +233,11 @@ namespace json
             i++;
 
             if (!isInline)
-                outStr << options.getTab(tabs);
+                outStr << options._getTab(tabs);
 
             if (!isInline && options.firstBracketInNewline && e->_getType() != JsonInterfaceType::value && e->_getType() != JsonInterfaceType::array)
                 outStr << '\n'
-                       << options.getTab(tabs);
+                       << options._getTab(tabs);
             outStr << e->getStringF(options, tabs);
 
             if (i < _data.size())
@@ -251,7 +251,7 @@ namespace json
         }
 
         if (!isInline)
-            outStr << (tabs != 0 ? options.getTab(tabs - 1) : "");
+            outStr << (tabs != 0 ? options._getTab(tabs - 1) : "");
 
         if (isInline && options.spaceAfterOpeningBeforeClosingBrackets)
             outStr << ' ';

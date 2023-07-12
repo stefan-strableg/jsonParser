@@ -42,7 +42,7 @@ namespace json
         /// @brief Gets the value as T.
         /// @tparam T Type of the item. (Converted from string via operator<<(std::ostream&, std::string))
         template <typename T>
-        inline T get()
+        inline T get() const
         {
             return strn::string_to<T>(_data);
         }
