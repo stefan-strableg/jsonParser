@@ -1,5 +1,7 @@
 This is a simple implementation of a json parser.
 
+Use doxygen to create the documentation.
+
 # Features
 
 This project features a wide variety of tools to 
