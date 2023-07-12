@@ -103,7 +103,7 @@ namespace json
                 backslash = !backslash;
                 break;
             case '"':
-                if (!inColonComma && bracesLevel == 0 && bracketsLevel == 0)
+                if (!backslash && !inColonComma && bracesLevel == 0 && bracketsLevel == 0)
                 {
                     if (!inQuote)
                         tokStart = i;
@@ -294,14 +294,10 @@ namespace json
 
     std::string JsonObject::getStringF(const JsonFormattingOptions &options, size_t tabs) const
     {
+        if (options.forceCompact)
+            return getString();
         std::ostringstream outStr;
-        bool isInline = options.forceInline || (options.inlineBottomLevelObjects && _isBottomLayer() && getString().size() < options.maxLengthToInline);
-
-        // if (!isInline && options.firstBracketInNewline && tabs != 0)
-        // {
-        //     outStr << '\n'
-        //            << options._getTab(tabs);
-        // }
+        bool isInline = options.forceInline || (options.inlineShortBottomLevelObjects && _isBottomLayer() && getString().size() < options.maxLengthToInline);
 
         outStr << '{';
 
@@ -325,7 +321,9 @@ namespace json
                    << ':'
                    << (options.spaceAfterColon ? " " : "");
 
-            if (!isInline && options.firstBracketInNewline && e.second->_getType() != JsonInterfaceType::value)
+            const bool isItemInline = options.forceInline || (options.inlineShortBottomLevelObjects && e.second->_isBottomLayer() && e.second->getString().size() < options.maxLengthToInline);
+
+            if (!isInline && !isItemInline && options.firstBracketInNewline && e.second->_getType() != JsonInterfaceType::value)
                 outStr << '\n'
                        << options._getTab(tabs);
             outStr << e.second->getStringF(options, tabs);

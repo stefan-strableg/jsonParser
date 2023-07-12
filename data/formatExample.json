@@ -5,9 +5,9 @@
     "bottom level object": {
         "type": "object"
     },
-    "bottom level array": {
-        "type": "array"
-    },
+    "bottom level array": [
+        "array"
+    ],
     "empty object": {},
     "empty array": [],
     "nested arrays": [

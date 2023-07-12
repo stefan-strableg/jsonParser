@@ -11,10 +11,10 @@ namespace json
         bool firstBracketInNewline = false;
         /// @brief Sets the last Bracket of Objects and Arrays to be in the next line, at the same indentation as the key
         bool lastBracketInNewline = true;
-        /// @brief Inlines arrays if the contain no objects or arrays
-        bool inlineBottomLevelArrays = true;
-        /// @brief Inlines objects if the contain no objects or arrays
-        bool inlineBottomLevelObjects = true;
+        /// @brief Inlines short arrays if the contain no objects or arrays
+        bool inlineShortBottomLevelArrays = true;
+        /// @brief Inlines short objects if the contain no objects or arrays
+        bool inlineShortBottomLevelObjects = true;
         /// @brief Only inlines objects that are below this character limit (to avoid long lines)
         size_t maxLengthToInline = 64;
         /// @brief Whether to put a space before colons in objects
@@ -27,8 +27,10 @@ namespace json
         bool spaceAfterOpeningBeforeClosingBrackets = true;
         /// @brief Forces the entire output to be inline
         bool forceInline = false;
+        /// @brief Keeps the output as compact as possible (essentially the same as calling getString() instead of getStringF())
+        bool forceCompact = false;
         /// @brief How many spaces to use as a tab. Set to 0 to instead use a '\\t'
-        uint8_t tabSpaces = 2;
+        uint8_t tabSpaces = 4;
 
         /// @brief [library internal] Returns a string representing the indentation
         [[nodiscard]] inline std::string _getTab(uint8_t tabs) const
@@ -74,18 +76,19 @@ namespace json
         /// @param options Formatting options.
         [[nodiscard]] virtual std::string getStringF(const JsonFormattingOptions &options = defaultJsonFormattingOptions, size_t tabs = 0) const = 0;
 
+        [[nodiscard]] virtual size_t size() const;
+
         /// @brief [library internal] Returns the type of the Json-item
-        /// @return
         [[nodiscard]] JsonInterface::JsonInterfaceType _getType() const;
 
         /// @brief [library internal] Returns true when the array does not contain any arrays or objects.
         [[nodiscard]] virtual bool _isBottomLayer() const = 0;
 
-        [[nodiscard]] virtual size_t size() const;
-
         /// @brief Deconstructor
         virtual ~JsonInterface();
     };
+
+    bool isValidJson(std::string str);
 }
 
 std::ostream &operator<<(std::ostream &os, const json::JsonInterface &j);

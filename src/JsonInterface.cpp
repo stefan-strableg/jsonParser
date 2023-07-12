@@ -8,7 +8,7 @@ namespace json
 {
     JsonFormattingOptions defaultJsonFormattingOptions;
 
-    JsonObject formattingExampleObject("{\"bottom level array\":{\"type\":\"array\"},\"bottom level object\":{\"type\":\"object\"},\"empty array\":[],\"empty object\":{},\"float Key\":6.9,\"int Key\":42,\"nested arrays\":[\"These:\",[[[\"are\"]]],\"nested\",\"arrays\"],\"nested objects\":{\"some\":{\"nested\":{\"objects\":{}}},\"are\":\"here\"},\"nested objects and arrays\":{\"these\":[\"are\",{\"arr\":[\"rays\"],\"nested\":\"objects\"}]},\"str Key\":\"String\"}");
+    JsonObject formattingExampleObject("{\"bottom level array\":[\"type\", \"array\"],\"bottom level object\":{\"type\":\"object\"},\"empty array\":[],\"empty object\":{},\"float Key\":6.9,\"int Key\":42,\"nested arrays\":[\"These:\",[[[\"are\"]]],\"nested\",\"arrays\"],\"nested objects\":{\"some\":{\"nested\":{\"objects\":{}}},\"are\":\"here\"},\"nested objects and arrays\":{\"these\":[\"are\",{\"arr\":[\"rays\"],\"nested\":\"objects\"}]},\"str Key\":\"String\"}");
 
     std::string JsonFormattingOptions::getFormattingExample() const
     {
@@ -51,6 +51,11 @@ namespace json
 
     JsonInterface::~JsonInterface()
     {
+    }
+
+    bool isValidJson(std::string str)
+    {
+        return false;
     }
 }
 

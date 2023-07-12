@@ -55,7 +55,7 @@ namespace strn
     /// @return Index of the nth occurence of n or str.size() if not found
     [[nodiscard]] size_t find(const std::string &str, char c, size_t n);
 
-    /// @brief Returns the nth token (substring) of a string that is seperated into tokens by a seperator character. Note that is null-indexed so that N = 0 returns the first element
+    /// @brief Returns the nth token (substring) of a string that is seperated into tokens by a seperator character. Note that n is null-indexed so that n = 0 returns the first token
     /// @return nth token
     [[nodiscard]] std::string token(const std::string &str, char seperator, size_t n);
 

@@ -35,9 +35,10 @@ namespace json
 
         /// @brief Sets the value
         void setString(std::string str) override;
-
         /// @brief Gets the value as raw string
         std::string getString() const override;
+        /// @brief Same as getStringF in this class
+        std::string getStringF(const JsonFormattingOptions &options = defaultJsonFormattingOptions, size_t tabs = 0) const override;
 
         /// @brief Gets the value as T.
         /// @tparam T Type of the item. (Converted from string via operator<<(std::ostream&, std::string))
@@ -61,8 +62,5 @@ namespace json
 
         /// @brief [library internal] Returns true when the array does not contain any arrays or objects.
         bool _isBottomLayer() const override;
-
-        /// @brief Same as getStringF in this class
-        std::string getStringF(const JsonFormattingOptions &options = defaultJsonFormattingOptions, size_t tabs = 0) const override;
     };
 }

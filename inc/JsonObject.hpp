@@ -25,10 +25,6 @@ namespace json
         JsonObject(const JsonObject &other);
         /// @brief Move-Constructor
         JsonObject(JsonObject &&other);
-        /// @brief Copy-Assignment operator
-        JsonObject &operator=(const JsonObject &other);
-        /// @brief Move-Assignment operator
-        JsonObject &operator=(JsonObject &&other);
 
         /// @brief Inserts an item into the object
         template <typename T>
@@ -48,10 +44,19 @@ namespace json
             insert(key, value);
         }
 
+        /// @brief Copy-Assignment operator
+        JsonObject &operator=(const JsonObject &other);
+        /// @brief Move-Assignment operator
+        JsonObject &operator=(JsonObject &&other);
+
         /// @brief Set the JSON-string the object represents
         void setString(std::string str) override;
         /// @brief Get the JSON-string the object represents
         [[nodiscard]] std::string getString() const override;
+        /// @brief Returns a formatted string.
+        /// @param tabs At how many tabs to start. Usually zero.
+        /// @param options Formatting options.
+        [[nodiscard]] std::string getStringF(const JsonFormattingOptions &options = defaultJsonFormattingOptions, size_t tabs = 0) const override;
 
         /// @brief Reads a .json file
         /// @param path A path accepted by fstream
@@ -69,10 +74,6 @@ namespace json
         /// @brief Returns the value of key as a compact string.
         [[nodiscard]] std::string S(std::string key) const;
 
-        /// @brief Returns the type of the value of key.
-        /// @return "Array", "Object" or "Value"
-        [[nodiscard]] std::string getType(std::string key) const;
-
         /// @brief Gets the value of key.
         /// @tparam T Type of the item. (Converted from string via operator<<(std::ostream&, std::string))
         template <typename T>
@@ -82,6 +83,10 @@ namespace json
                 return T();
             return strn::string_to<T>(_data.at(key)->getString());
         }
+
+        /// @brief Returns the type of the value of key.
+        /// @return "Array", "Object" or "Value"
+        [[nodiscard]] std::string getType(std::string key) const;
 
         /// @brief Removes an element from the array. Does nothing if the element doesn't exist.
         void remove(std::string key);
@@ -97,11 +102,6 @@ namespace json
 
         /// @brief [library internal] Returns true when the array does not contain any arrays or objects.
         [[nodiscard]] bool _isBottomLayer() const override;
-
-        /// @brief Returns a formatted string.
-        /// @param tabs At how many tabs to start. Usually zero.
-        /// @param options Formatting options.
-        [[nodiscard]] std::string getStringF(const JsonFormattingOptions &options = defaultJsonFormattingOptions, size_t tabs = 0) const override;
 
         /// @brief Destructor
         ~JsonObject();

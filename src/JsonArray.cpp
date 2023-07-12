@@ -176,6 +176,16 @@ namespace json
         return _data.at(n)->getString();
     }
 
+    void JsonArray::erase(size_t n)
+    {
+        _data.erase(_data.begin() + n);
+    }
+
+    void JsonArray::erase(size_t start, size_t end)
+    {
+        _data.erase(_data.begin() + start, _data.begin() + end);
+    }
+
     std::string JsonArray::getType(size_t n) const
     {
         if (_data.size() <= n)
@@ -210,8 +220,10 @@ namespace json
 
     std::string JsonArray::getStringF(const JsonFormattingOptions &options, size_t tabs) const
     {
+        if (options.forceCompact)
+            return getString();
         std::ostringstream outStr;
-        bool isInline = options.forceInline || (options.inlineBottomLevelArrays && _isBottomLayer() && getString().size() < options.maxLengthToInline);
+        bool isInline = options.forceInline || (options.inlineShortBottomLevelArrays && _isBottomLayer() && getString().size() < options.maxLengthToInline);
 
         // if (!isInline && (options.firstBracketInNewline) && tabs != 0)
         //     outStr << '\n'

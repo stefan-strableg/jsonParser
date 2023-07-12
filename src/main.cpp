@@ -6,14 +6,9 @@
 int main(void)
 {
   json::JsonFormattingOptions options;
-  options.inlineBottomLevelArrays = false;
-  options.inlineBottomLevelObjects = false;
-  options.firstBracketInNewline = true;
+  options.forceCompact = false;
 
-  json::JsonObject jobj;
-  jobj.readFromFile("data/example.json");
-
-  std::cout << jobj.getStringF();
+  std::cout << options.getFormattingExample() << "\n";
 
   return EXIT_SUCCESS;
 }
