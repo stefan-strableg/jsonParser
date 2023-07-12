@@ -213,9 +213,9 @@ namespace json
         std::ostringstream outStr;
         bool isInline = options.forceInline || (options.inlineBottomLevelArrays && _isBottomLayer() && getString().size() < options.maxLengthToInline);
 
-        if (!isInline && (options.firstBracketInNewline) && tabs != 0)
-            outStr << '\n'
-                   << options.getTab(tabs);
+        // if (!isInline && (options.firstBracketInNewline) && tabs != 0)
+        //     outStr << '\n'
+        //            << options.getTab(tabs);
 
         outStr << '[';
 
@@ -235,6 +235,9 @@ namespace json
             if (!isInline)
                 outStr << options.getTab(tabs);
 
+            if (!isInline && options.firstBracketInNewline && e->_getType() != JsonInterfaceType::value && e->_getType() != JsonInterfaceType::array)
+                outStr << '\n'
+                       << options.getTab(tabs);
             outStr << e->getStringF(options, tabs);
 
             if (i < _data.size())

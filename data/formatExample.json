@@ -1,0 +1,45 @@
+{
+    "str Key": "String",
+    "int Key": 42,
+    "float Key": 6.9,
+    "bottom level object": {
+        "type": "object"
+    },
+    "bottom level array": {
+        "type": "array"
+    },
+    "empty object": {},
+    "empty array": [],
+    "nested arrays": [
+        "These:",
+        [
+            [
+                [
+                    "are"
+                ]
+            ]
+        ],
+        "nested",
+        "arrays"
+    ],
+    "nested objects": {
+        "these": "are",
+        "some": {
+            "nested": {
+                "objects": {}
+            }
+        }
+    },
+    "nested objects and arrays": {
+        "these": [
+            "are",
+            {
+                "nested": "objects",
+                "and": [
+                    "arr",
+                    "rays"
+                ]
+            }
+        ]
+    }
+}

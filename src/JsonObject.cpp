@@ -297,11 +297,11 @@ namespace json
         std::ostringstream outStr;
         bool isInline = options.forceInline || (options.inlineBottomLevelObjects && _isBottomLayer() && getString().size() < options.maxLengthToInline);
 
-        if (!isInline && options.firstBracketInNewline && tabs != 0)
-        {
-            outStr << '\n'
-                   << options.getTab(tabs);
-        }
+        // if (!isInline && options.firstBracketInNewline && tabs != 0)
+        // {
+        //     outStr << '\n'
+        //            << options.getTab(tabs);
+        // }
 
         outStr << '{';
 
@@ -325,6 +325,9 @@ namespace json
                    << ':'
                    << (options.spaceAfterColon ? " " : "");
 
+            if (!isInline && options.firstBracketInNewline && e.second->_getType() != JsonInterfaceType::value)
+                outStr << '\n'
+                       << options.getTab(tabs);
             outStr << e.second->getStringF(options, tabs);
 
             if (i < _data.size())

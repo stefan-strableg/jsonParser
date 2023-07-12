@@ -1,25 +1,19 @@
 {
 	"Amt" : "US-Praesident", 
 	"Geburtsdatum" : "1911-02-06", 
-	"Lieblingszahlen" : 
-	[
-		"Vierzehn",
-		42,
-		6.9,
-		"Sieben"
-	], 
+	"Lieblingszahlen" : [ "Vierzehn", 42, 6.9, "Sieben" ], 
 	"Nachname" : "Reagan", 
 	"Nationalitaet" : "US", 
 	"Partei" : "Republican Party", 
-	"Verschachtelte Arrays" : 
-	[
-		
+	"Verschachtelte Arrays" : [
 		[
-			
-			[
-				"Lol"
-			]
+			[ "Lol" ]
 		]
 	], 
+	"Verschachtelte Objeckte" : {
+		"A" : {
+			"B" : { "C" : "Lol" }
+		}
+	}, 
 	"Vorname" : "Ronald"
 }

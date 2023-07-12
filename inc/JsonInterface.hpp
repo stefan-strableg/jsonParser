@@ -37,6 +37,8 @@ namespace json
                 ret += tabSpaces == 0 ? std::string(1, '\t') : std::string(tabSpaces, ' ');
             return ret;
         }
+
+        std::string getFormattingExample();
     };
 
     extern JsonFormattingOptions defaultJsonFormattingOptions;
