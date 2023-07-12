@@ -11,9 +11,9 @@ This project features a wide variety of tools to
 
 Create object from string or set it later:
 
-    json::JsonObject object("{"Key": "\"Value\""}");
+    json::JsonObject object("{"Key": "Value"}");
 
-    object.setString("{"AnotherKey": "\"AnotherValue\""}");
+    object.setString("{"AnotherKey": "AnotherValue"}");
 
 Create a unformatted or formatted string from a JsonObject:
 
