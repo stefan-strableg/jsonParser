@@ -103,7 +103,7 @@ namespace json
                 backslash = !backslash;
                 break;
             case '"':
-                if (!inColonComma && !backslash && bracesLevel == 0 && bracketsLevel == 0)
+                if (!inColonComma && bracesLevel == 0 && bracketsLevel == 0)
                 {
                     if (!inQuote)
                         tokStart = i;
@@ -111,9 +111,9 @@ namespace json
                     {
                         keyValPair.first = _string.substr(tokStart + 1, i - tokStart - 1);
                     }
-
-                    inQuote = !inQuote;
                 }
+                if (!backslash)
+                    inQuote = !inQuote;
                 break;
             case '{':
                 if (!inQuote)
@@ -189,12 +189,12 @@ namespace json
         return true;
     }
 
-    bool JsonObject::writeToFile(std::string path)
+    bool JsonObject::writeToFile(std::string path, JsonFormattingOptions options)
     {
         std::ofstream outFile(path);
         if (!outFile.is_open())
             return false;
-        outFile << getString();
+        outFile << getStringF(options);
         return true;
     }
 
@@ -292,18 +292,21 @@ namespace json
         return true;
     }
 
-    std::string JsonObject::getStringF(size_t tabs, const JsonFormattingOptions &options) const
+    std::string JsonObject::getStringF(const JsonFormattingOptions &options, size_t tabs) const
     {
         std::ostringstream outStr;
         bool isInline = options.forceInline || (options.inlineBottomLevelObjects && _isBottomLayer() && getString().size() < options.maxLengthToInline);
 
-        if (!isInline && options.firstObjectBraceInNewLine && tabs != 0)
+        if (!isInline && options.firstBracketInNewline && tabs != 0)
         {
             outStr << '\n'
                    << options.getTab(tabs);
         }
 
         outStr << '{';
+
+        if (isInline && options.spaceAfterOpeningBeforeClosingBrackets)
+            outStr << ' ';
 
         if (!isInline)
             outStr << '\n';
@@ -318,21 +321,28 @@ namespace json
                 outStr << options.getTab(tabs);
 
             outStr << '\"' << e.first << '\"'
-                   << (options.spaceBeforeColon && !isInline ? " " : "")
+                   << (options.spaceBeforeColon ? " " : "")
                    << ':'
-                   << (options.spaceAfterColon && !isInline ? " " : "");
+                   << (options.spaceAfterColon ? " " : "");
 
-            outStr << e.second->getStringF(tabs, options);
+            outStr << e.second->getStringF(options, tabs);
 
             if (i < _data.size())
+            {
                 outStr << ',';
+                if (options.spaceAfterComma)
+                    outStr << ' ';
+            }
 
-            if (!isInline)
+            if (!isInline && (options.lastBracketInNewline || i < _data.size()))
                 outStr << '\n';
         }
 
-        if (!isInline)
+        if (!isInline && options.lastBracketInNewline)
             outStr << (tabs != 0 ? options.getTab(tabs - 1) : "");
+
+        if (isInline && options.spaceAfterOpeningBeforeClosingBrackets)
+            outStr << ' ';
 
         outStr << '}';
 

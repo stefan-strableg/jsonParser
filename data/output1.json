@@ -1,0 +1,15 @@
+{
+  "Deckung": 2e+6, 
+  "Herausgeber": "Xema", 
+  "Inhaber": {
+    "Alter": 42, 
+    "Hobbys": [ "Reiten", "Golfen", "Lesen" ], 
+    "Kinder": [], 
+    "Name": "Mustermann", 
+    "Partner": null, 
+    "Vorname": "Max", 
+    "maennlich": true
+  }, 
+  "Nummer": "1234-5678-9012-3456", 
+  "Waehrung": "EURO"
+}

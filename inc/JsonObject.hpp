@@ -58,7 +58,7 @@ namespace json
         bool readFromFile(std::string path);
         /// @brief Writes to a .json file
         /// @param path A path accepted by fstream
-        bool writeToFile(std::string path);
+        bool writeToFile(std::string path, JsonFormattingOptions options = defaultJsonFormattingOptions);
 
         /// @brief Returns the value of keyas an array. Throws a std::runtime_error if the nth item is not an of another type.
         JsonArray &A(std::string key);
@@ -101,7 +101,7 @@ namespace json
         /// @brief Returns a formatted string.
         /// @param tabs At how many tabs to start. Usually zero.
         /// @param options Formatting options.
-        std::string getStringF(size_t tabs = 0, const JsonFormattingOptions &options = defaultJsonFormattingOptions) const override;
+        std::string getStringF(const JsonFormattingOptions &options = defaultJsonFormattingOptions, size_t tabs = 0) const override;
 
         /// @brief Destructor
         ~JsonObject();

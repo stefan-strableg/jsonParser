@@ -16,6 +16,23 @@ namespace json
         /// @brief Constructor from string
         JsonValue(std::string str);
 
+        /// @brief Parameterized Constructor
+        template <typename T>
+        inline JsonValue(T t)
+        {
+            std::ostringstream outStr;
+            outStr << t;
+            _data = outStr.str();
+        }
+
+        /// @brief Assignment operator
+        template <typename T>
+        inline JsonValue &operator=(T t)
+        {
+            set(t);
+            return *this;
+        }
+
         /// @brief Sets the value
         void setString(std::string str) override;
 
@@ -46,6 +63,6 @@ namespace json
         bool _isBottomLayer() const override;
 
         /// @brief Same as getStringF in this class
-        std::string getStringF(size_t tabs = 0, const JsonFormattingOptions &options = defaultJsonFormattingOptions) const override;
+        std::string getStringF(const JsonFormattingOptions &options = defaultJsonFormattingOptions, size_t tabs = 0) const override;
     };
 }

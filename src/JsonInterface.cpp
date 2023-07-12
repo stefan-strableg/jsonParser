@@ -22,7 +22,9 @@ namespace json
         }
         else if (str.size() > 2 && *str.begin() == '[' && *(str.end() - 1) == ']')
         {
-            return new JsonArray(str);
+            auto ret = new JsonArray();
+            ret->setString(str);
+            return ret;
         }
         else
         {

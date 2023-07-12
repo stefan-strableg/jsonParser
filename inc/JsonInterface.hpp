@@ -7,25 +7,27 @@ namespace json
     /// @brief Options to control the output of getStringF()
     struct JsonFormattingOptions
     {
-        /// @brief Sets the first Brace of Objects to be in the next line, at the same indentation as the key
-        bool firstObjectBraceInNewLine = false;
-        /// @brief Sets the first Bracket of Arrays to be in the next line, at the same indentation as the key
-        bool firstArrayBracketInNewLine = false;
+        /// @brief Sets the first Bracket of Objects and Arrays to be in the next line, at the same indentation as the key
+        bool firstBracketInNewline = false;
+        /// @brief Sets the last Bracket of Objects and Arrays to be in the next line, at the same indentation as the key
+        bool lastBracketInNewline = true;
         /// @brief Inlines arrays if the contain no objects or arrays
         bool inlineBottomLevelArrays = true;
         /// @brief Inlines objects if the contain no objects or arrays
         bool inlineBottomLevelObjects = true;
         /// @brief Only inlines objects that are below this character limit (to avoid long lines)
-        size_t maxLengthToInline = 50;
+        size_t maxLengthToInline = 64;
         /// @brief Whether to put a space before colons in objects
         bool spaceBeforeColon = false;
         /// @brief Whether to put a space after colons in objects
         bool spaceAfterColon = true;
         /// @brief Whether to put a space after colons in arrays when inlining
         bool spaceAfterComma = true;
+        /// @brief Whether to put a space after opening and before closing brackets
+        bool spaceAfterOpeningBeforeClosingBrackets = true;
         /// @brief Forces the entire output to be inline
         bool forceInline = false;
-        /// @brief How many spaces to use as a tab. Set to 0 to instead use a '\t'
+        /// @brief How many spaces to use as a tab. Set to 0 to instead use a '\\t'
         uint8_t tabSpaces = 2;
 
         inline std::string getTab(uint8_t tabs) const
@@ -66,7 +68,7 @@ namespace json
         /// @brief Returns a formatted string.
         /// @param tabs At how many tabs to start. Usually zero.
         /// @param options Formatting options.
-        virtual std::string getStringF(size_t tabs = 0, const JsonFormattingOptions &options = defaultJsonFormattingOptions) const = 0;
+        virtual std::string getStringF(const JsonFormattingOptions &options = defaultJsonFormattingOptions, size_t tabs = 0) const = 0;
 
         /// @brief [library internal] Returns the type of the Json-item
         /// @return

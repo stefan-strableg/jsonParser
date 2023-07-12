@@ -12,12 +12,6 @@ namespace json
     {
     }
 
-    JsonArray::JsonArray(std::string str)
-        : JsonArray()
-    {
-        setString(str);
-    }
-
     JsonArray::JsonArray(const JsonArray &other)
         : JsonArray()
     {
@@ -214,16 +208,19 @@ namespace json
         return true;
     }
 
-    std::string JsonArray::getStringF(size_t tabs, const JsonFormattingOptions &options) const
+    std::string JsonArray::getStringF(const JsonFormattingOptions &options, size_t tabs) const
     {
         std::ostringstream outStr;
         bool isInline = options.forceInline || (options.inlineBottomLevelArrays && _isBottomLayer() && getString().size() < options.maxLengthToInline);
 
-        if (!isInline && options.firstArrayBracketInNewLine && tabs != 0)
+        if (!isInline && (options.firstBracketInNewline) && tabs != 0)
             outStr << '\n'
                    << options.getTab(tabs);
 
         outStr << '[';
+
+        if (isInline && options.spaceAfterOpeningBeforeClosingBrackets)
+            outStr << ' ';
 
         if (!isInline)
             outStr << '\n';
@@ -238,7 +235,7 @@ namespace json
             if (!isInline)
                 outStr << options.getTab(tabs);
 
-            outStr << e->getStringF(tabs, options);
+            outStr << e->getStringF(options, tabs);
 
             if (i < _data.size())
             {
@@ -246,12 +243,15 @@ namespace json
                 if (options.spaceAfterComma && isInline)
                     outStr << ' ';
             }
-            if (!isInline)
+            if (!isInline && (options.lastBracketInNewline || i < _data.size()))
                 outStr << '\n';
         }
 
         if (!isInline)
             outStr << (tabs != 0 ? options.getTab(tabs - 1) : "");
+
+        if (isInline && options.spaceAfterOpeningBeforeClosingBrackets)
+            outStr << ' ';
 
         outStr << ']';
 

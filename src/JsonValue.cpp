@@ -29,7 +29,7 @@ namespace json
         return true;
     }
 
-    std::string JsonValue::getStringF(size_t tabs, const JsonFormattingOptions &options) const
+    std::string JsonValue::getStringF(const JsonFormattingOptions &options, size_t tabs) const
     {
         return _data;
     }

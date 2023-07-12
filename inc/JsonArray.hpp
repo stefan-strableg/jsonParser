@@ -30,8 +30,6 @@ namespace json
         /// @brief Default-Constructor
         JsonArray();
 
-        /// @brief Constructor from a JSON-string
-        JsonArray(std::string str);
         /// @brief Copy-Constructor
         JsonArray(const JsonArray &other);
         /// @brief Move-Constructor
@@ -98,7 +96,7 @@ namespace json
         /// @brief Returns a formatted string.
         /// @param tabs At how many tabs to start. Usually zero.
         /// @param options Formatting options.
-        std::string getStringF(size_t tabs = 0, const JsonFormattingOptions &options = defaultJsonFormattingOptions) const override;
+        std::string getStringF(const JsonFormattingOptions &options = defaultJsonFormattingOptions, size_t tabs = 0) const override;
 
         /// @brief Deconstructor
         ~JsonArray();
