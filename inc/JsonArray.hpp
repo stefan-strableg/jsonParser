@@ -1,6 +1,6 @@
 #pragma once
 
-#include "JsonInterface.hpp"
+#include "JsonEntity.hpp"
 #include "string.hpp"
 #include <vector>
 
@@ -65,6 +65,9 @@ namespace json
         [[nodiscard]] JsonValue &V(size_t index);
         /// @brief Returns the nth entity in the array as a compact string.
         [[nodiscard]] std::string S(size_t index) const;
+        
+        /// @brief Returns whether a value exists and is equal to "true" or not
+        [[nodiscard]] bool getBool(size_t index) const;
 
         /// @brief Gets the nth entity in the array.
         /// @tparam T Type of the entity. (Converted from string via operator<<(std::ostream&, std::string))

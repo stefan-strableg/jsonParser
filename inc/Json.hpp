@@ -1,5 +1,5 @@
 #pragma once
-#include "JsonInterface.hpp"
+#include "JsonEntity.hpp"
 #include "JsonArray.hpp"
 #include "JsonObject.hpp"
 #include "JsonValue.hpp"

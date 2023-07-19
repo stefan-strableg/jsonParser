@@ -1,6 +1,6 @@
 #pragma once
 
-#include "JsonInterface.hpp"
+#include "JsonEntity.hpp"
 #include "string.hpp"
 
 namespace json

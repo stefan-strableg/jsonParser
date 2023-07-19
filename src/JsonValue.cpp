@@ -4,14 +4,14 @@
 namespace json
 {
     JsonValue::JsonValue(std::string str)
-        : JsonEntity(JsonInterfaceType::value)
+        : JsonEntity(JsonEntityType::value)
     {
         setString(str);
     }
 
-    void JsonValue::setString(std::string str)
+    void JsonValue::setString(std::string raw)
     {
-        _data = str;
+        _data = raw;
     }
 
     std::string JsonValue::getString() const

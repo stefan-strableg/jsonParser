@@ -51,7 +51,7 @@ namespace json
     class JsonEntity
     {
     protected:
-        enum JsonInterfaceType : uint8_t
+        enum JsonEntityType : uint8_t
         {
             value,
             array,
@@ -63,7 +63,7 @@ namespace json
         [[nodiscard]] static JsonEntity *makeNew(std::string raw);
 
         /// @brief Parameterized Constructor
-        JsonEntity(JsonInterfaceType type_);
+        JsonEntity(JsonEntityType type_);
 
         /// @brief Set the JSON-string the object represents
         virtual void setString(std::string raw) = 0;
@@ -79,7 +79,7 @@ namespace json
         [[nodiscard]] virtual size_t size() const;
 
         /// @brief [library internal] Returns the type of the Json-entity
-        [[nodiscard]] JsonEntity::JsonInterfaceType _getType() const;
+        [[nodiscard]] JsonEntity::JsonEntityType _getType() const;
 
         /// @brief [library internal] Returns true when the array does not contain any arrays or objects.
         [[nodiscard]] virtual bool _isBottomLayer() const = 0;

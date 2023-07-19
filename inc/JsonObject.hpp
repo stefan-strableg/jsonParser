@@ -1,5 +1,5 @@
 #pragma once
-#include "JsonInterface.hpp"
+#include "JsonEntity.hpp"
 #include "string.hpp"
 #include <sstream>
 #include <iostream>
@@ -73,6 +73,9 @@ namespace json
         [[nodiscard]] JsonValue &V(std::string key);
         /// @brief Returns the value of key as a compact string.
         [[nodiscard]] std::string S(std::string key) const;
+
+        /// @brief Returns whether a value exists and is equal to "true" or not
+        [[nodiscard]] bool getBool(std::string key) const;
 
         /// @brief Gets the value of key.
         /// @tparam T Type of the entity. (Converted from string via operator<<(std::ostream&, std::string))
