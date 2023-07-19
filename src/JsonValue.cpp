@@ -4,7 +4,7 @@
 namespace json
 {
     JsonValue::JsonValue(std::string str)
-        : JsonInterface(JsonInterfaceType::value)
+        : JsonEntity(JsonInterfaceType::value)
     {
         setString(str);
     }

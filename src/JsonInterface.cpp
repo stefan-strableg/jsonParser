@@ -15,12 +15,12 @@ namespace json
         return formattingExampleObject.getStringF(*this);
     }
 
-    JsonInterface::JsonInterface(JsonInterfaceType t)
+    JsonEntity::JsonEntity(JsonInterfaceType t)
         : type(t)
     {
     }
 
-    JsonInterface *JsonInterface::makeNew(std::string str)
+    JsonEntity *JsonEntity::makeNew(std::string str)
     {
         strn::trim(str);
         if (str.size() > 2 && *str.begin() == '{' && *(str.end() - 1) == '}')
@@ -39,17 +39,17 @@ namespace json
         }
     }
 
-    JsonInterface::JsonInterfaceType JsonInterface::_getType() const
+    JsonEntity::JsonInterfaceType JsonEntity::_getType() const
     {
         return type;
     }
 
-    size_t JsonInterface::size() const
+    size_t JsonEntity::size() const
     {
         return 1;
     }
 
-    JsonInterface::~JsonInterface()
+    JsonEntity::~JsonEntity()
     {
     }
 
@@ -59,7 +59,7 @@ namespace json
     }
 }
 
-std::ostream &operator<<(std::ostream &os, const json::JsonInterface &j)
+std::ostream &operator<<(std::ostream &os, const json::JsonEntity &j)
 {
     os << j.getString();
     return os;

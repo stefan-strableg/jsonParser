@@ -9,12 +9,12 @@
 namespace json
 {
     JsonObject::JsonObject()
-        : JsonInterface(JsonInterfaceType::object)
+        : JsonEntity(JsonInterfaceType::object)
     {
     }
 
     JsonObject::JsonObject(std::string str)
-        : JsonInterface(JsonInterfaceType::object)
+        : JsonEntity(JsonInterfaceType::object)
     {
         setString(str);
     }
@@ -25,7 +25,7 @@ namespace json
         _data.clear();
         for (const auto &item : other._data)
         {
-            _data.insert({item.first, JsonInterface::makeNew(item.second->getString())});
+            _data.insert({item.first, JsonEntity::makeNew(item.second->getString())});
         }
     }
 
@@ -54,7 +54,7 @@ namespace json
 
         for (const auto &item : other._data)
         {
-            _data.insert({item.first, JsonInterface::makeNew(item.second->getString())});
+            _data.insert({item.first, JsonEntity::makeNew(item.second->getString())});
         }
         return *this;
     }
@@ -89,7 +89,7 @@ namespace json
                tokStart = 1;
         uint16_t bracesLevel = 0,
                  bracketsLevel = 0;
-        std::pair<std::string, JsonInterface *> keyValPair = {"", nullptr};
+        std::pair<std::string, JsonEntity *> keyValPair = {"", nullptr};
         bool inQuote = false,
              backslash = false,
              inColonComma = false;
@@ -141,7 +141,7 @@ namespace json
             case ',':
                 if (inColonComma && !inQuote && bracesLevel == 0 && bracketsLevel == 0)
                 {
-                    keyValPair.second = JsonInterface::makeNew(_string.substr(tokStart, i - tokStart));
+                    keyValPair.second = JsonEntity::makeNew(_string.substr(tokStart, i - tokStart));
                     _data.insert(keyValPair);
                     inColonComma = false;
                 }
@@ -153,7 +153,7 @@ namespace json
 
         if (inColonComma)
         {
-            keyValPair.second = JsonInterface::makeNew(_string.substr(tokStart, i - tokStart));
+            keyValPair.second = JsonEntity::makeNew(_string.substr(tokStart, i - tokStart));
             _data.insert(keyValPair);
         }
     }

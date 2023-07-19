@@ -8,7 +8,7 @@ namespace json
 {
 
     JsonArray::JsonArray()
-        : JsonInterface(JsonInterfaceType::array)
+        : JsonEntity(JsonInterfaceType::array)
     {
     }
 
@@ -18,7 +18,7 @@ namespace json
         _data.clear();
         for (const auto &item : other._data)
         {
-            _data.push_back(JsonInterface::makeNew(item->getString()));
+            _data.push_back(JsonEntity::makeNew(item->getString()));
         }
     }
 
@@ -47,7 +47,7 @@ namespace json
 
         for (const auto &item : other._data)
         {
-            _data.push_back({JsonInterface::makeNew(item->getString())});
+            _data.push_back({JsonEntity::makeNew(item->getString())});
         }
         return *this;
     }
@@ -109,7 +109,7 @@ namespace json
             case ',':
                 if (!inQuote && bracesLevel == 0 && bracketsLevel == 0)
                 {
-                    _data.push_back(JsonInterface::makeNew(jsonString.substr(tokStart, i - tokStart)));
+                    _data.push_back(JsonEntity::makeNew(jsonString.substr(tokStart, i - tokStart)));
                     tokStart = i + 1;
                 }
             }
@@ -117,7 +117,7 @@ namespace json
             if (resetBackslash)
                 backslash = false;
         }
-        _data.push_back(JsonInterface::makeNew(jsonString.substr(tokStart, i - tokStart - 1)));
+        _data.push_back(JsonEntity::makeNew(jsonString.substr(tokStart, i - tokStart - 1)));
     }
 
     std::string JsonArray::getString() const
