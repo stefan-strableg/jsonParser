@@ -7,22 +7,22 @@ namespace json
 {
 
     /// @brief Represents a JSON-value
-    class JsonValue : public JsonInterface
+    class JsonValue : public JsonEntity
     {
     private:
         std::string _data;
 
     public:
         /// @brief Constructor from string
-        JsonValue(std::string str);
+        JsonValue(std::string raw);
 
         /// @brief Parameterized Constructor
         template <typename T>
         inline JsonValue(T t)
         {
-            std::ostringstream outStr;
-            outStr << t;
-            _data = outStr.str();
+            std::ostringstream outStream;
+            outStream << t;
+            _data = outStream.str();
         }
 
         /// @brief Assignment operator
@@ -34,30 +34,30 @@ namespace json
         }
 
         /// @brief Sets the value
-        void setString(std::string str) override;
+        void setString(std::string raw) override;
         /// @brief Gets the value as raw string
         std::string getString() const override;
         /// @brief Same as getStringF in this class
         std::string getStringF(const JsonFormattingOptions &options = defaultJsonFormattingOptions, size_t tabs = 0) const override;
 
         /// @brief Gets the value as T.
-        /// @tparam T Type of the item. (Converted from string via operator<<(std::ostream&, std::string))
+        /// @tparam T Type of the entity. (Converted from string via operator<<(std::ostream&, std::string))
         template <typename T>
         inline T get() const
         {
             return strn::string_to<T>(_data);
         }
 
-        /// @brief Sets the item
+        /// @brief Sets the entity
         template <typename T>
         inline void set(T val)
         {
-            std::ostringstream outStr;
-            outStr << val;
-            _data = outStr.str();
+            std::ostringstream outStream;
+            outStream << val;
+            _data = outStream.str();
         }
 
-        /// @brief Returns the size of the object in JSON-items
+        /// @brief Returns the size of the object in JSON-entities
         size_t size() const override;
 
         /// @brief [library internal] Returns true when the array does not contain any arrays or objects.
