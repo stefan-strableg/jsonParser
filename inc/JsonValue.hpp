@@ -37,7 +37,7 @@ namespace json
         void setString(std::string str) override;
         /// @brief Gets the value as raw string
         std::string getString() const override;
-        /// @brief Same as getStringF in this class
+        /// @brief Same as getString in this class
         std::string getStringF(const JsonFormattingOptions &options = defaultJsonFormattingOptions, size_t tabs = 0) const override;
 
         /// @brief Gets the value as T.

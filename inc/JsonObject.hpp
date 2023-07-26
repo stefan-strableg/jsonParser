@@ -54,7 +54,7 @@ namespace json
         /// @brief Get the JSON-string the object represents
         [[nodiscard]] std::string getString() const override;
         /// @brief Returns a formatted string.
-        /// @param tabs At how many tabs to start. Usually zero.
+        /// @param tabs  Indendation of all lines. Usually Zero.
         /// @param options Formatting options.
         [[nodiscard]] std::string getStringF(const JsonFormattingOptions &options = defaultJsonFormattingOptions, size_t tabs = 0) const override;
 

@@ -53,7 +53,7 @@ namespace json
         /// @note Use getStringF() for a formatted and more readable JSON-String
         [[nodiscard]] std::string getString() const override;
         /// @brief Returns a formatted string.
-        /// @param tabs At how many tabs to start. Usually zero.
+        /// @param tabs  Indendation of all lines. Usually Zero.
         /// @param options Formatting options.
         [[nodiscard]] std::string getStringF(const JsonFormattingOptions &options = defaultJsonFormattingOptions, size_t tabs = 0) const override;
 
@@ -112,6 +112,52 @@ namespace json
 
         /// @brief Deconstructor
         ~JsonArray();
-    };
 
-}
+        class Iterator
+        {
+        private:
+            std::vector<JsonInterface *>::iterator _current;
+
+        public:
+            // Constructor
+            Iterator(std::vector<JsonInterface *>::iterator current) : _current(current) {}
+
+            // Overload the dereference operator *
+            [[nodiscard]] JsonInterface &operator*() const
+            {
+                return **_current;
+            }
+
+            // Overload the pre-increment operator ++
+            Iterator &operator++()
+            {
+                ++_current;
+                return *this;
+            }
+
+            // Overload the post-increment operator ++
+            Iterator operator++(int)
+            {
+                Iterator temp = *this;
+                ++_current;
+                return temp;
+            }
+
+            // Overload the equality operator ==
+            [[nodiscard]] bool operator==(const Iterator &other) const
+            {
+                return _current == other._current;
+            }
+
+            // Overload the inequality operator !=
+            [[nodiscard]] bool operator!=(const Iterator &other) const
+            {
+                return _current != other._current;
+            }
+        };
+
+        [[nodiscard]] Iterator begin();
+
+        [[nodiscard]] Iterator end();
+    };
+};

@@ -280,4 +280,14 @@ namespace json
             delete item;
         }
     }
+
+    JsonArray::Iterator JsonArray::begin()
+    {
+        return Iterator(_data.begin());
+    }
+
+    JsonArray::Iterator JsonArray::end()
+    {
+        return Iterator(_data.end());
+    }
 }
