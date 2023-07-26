@@ -5,10 +5,15 @@
 
 int main(void)
 {
-  json::JsonFormattingOptions options;
-  options.forceCompact = false;
+  json::JsonObject jobj;
+  jobj.readFromFile("data/json1.json");
 
-  std::cout << options.getFormattingExample() << "\n";
+  std::cout << jobj.getStringF() << '\n';
+
+  for (auto &e : jobj.O("Inhaber").A("Hobbys"))
+  {
+    std::cout << e << '\n';
+  }
 
   return EXIT_SUCCESS;
 }
