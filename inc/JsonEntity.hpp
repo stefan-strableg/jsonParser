@@ -47,11 +47,11 @@ namespace json
 
     extern JsonFormattingOptions defaultJsonFormattingOptions;
 
-    /// @brief Base class for all Json-items
-    class JsonInterface
+    /// @brief Base class for all Json-entities
+    class JsonEntity
     {
     protected:
-        enum JsonInterfaceType : uint8_t
+        enum JsonEntityType : uint8_t
         {
             value,
             array,
@@ -59,14 +59,14 @@ namespace json
         } type;
 
     public:
-        /// @brief [Library internal] Creates a new Json-item and returns a pointer to it.
-        [[nodiscard]] static JsonInterface *makeNew(std::string str);
+        /// @brief [Library internal] Creates a new Json-entity and returns a pointer to it.
+        [[nodiscard]] static JsonEntity *makeNew(std::string raw);
 
         /// @brief Parameterized Constructor
-        JsonInterface(JsonInterfaceType t);
+        JsonEntity(JsonEntityType type_);
 
         /// @brief Set the JSON-string the object represents
-        virtual void setString(std::string str) = 0;
+        virtual void setString(std::string raw) = 0;
 
         /// @brief Get the JSON-string the object represents
         [[nodiscard]] virtual std::string getString() const = 0;
@@ -78,17 +78,17 @@ namespace json
 
         [[nodiscard]] virtual size_t size() const;
 
-        /// @brief [library internal] Returns the type of the Json-item
-        [[nodiscard]] JsonInterface::JsonInterfaceType _getType() const;
+        /// @brief [library internal] Returns the type of the Json-entity
+        [[nodiscard]] JsonEntity::JsonEntityType _getType() const;
 
         /// @brief [library internal] Returns true when the array does not contain any arrays or objects.
         [[nodiscard]] virtual bool _isBottomLayer() const = 0;
 
         /// @brief Deconstructor
-        virtual ~JsonInterface();
+        virtual ~JsonEntity();
     };
 
-    bool isValidJson(std::string str);
+    bool isValidJson(std::string json);
 }
 
-std::ostream &operator<<(std::ostream &os, const json::JsonInterface &j);
+std::ostream &operator<<(std::ostream &os, const json::JsonEntity &entity);

@@ -1,5 +1,5 @@
 #pragma once
-#include "JsonInterface.hpp"
+#include "JsonEntity.hpp"
 #include "string.hpp"
 #include <sstream>
 #include <iostream>
@@ -11,29 +11,29 @@ namespace json
     class JsonValue;
 
     /// @brief Represents a JSON-object
-    class JsonObject : public JsonInterface
+    class JsonObject : public JsonEntity
     {
     private:
-        std::map<std::string, JsonInterface *> _data;
+        std::map<std::string, JsonEntity *> _data;
 
     public:
         /// @brief Default-Constructor
         JsonObject();
         /// @brief Constructor from a JSON-string
-        JsonObject(std::string str);
+        JsonObject(std::string raw);
         /// @brief Copy-Constructor
         JsonObject(const JsonObject &other);
         /// @brief Move-Constructor
         JsonObject(JsonObject &&other);
 
-        /// @brief Inserts an item into the object
+        /// @brief Inserts an entity into the object
         template <typename T>
-        inline void insert(std::string key, T val)
+        inline void insert(std::string key, T value)
         {
             remove(key);
-            std::ostringstream inStr;
-            inStr << val;
-            _data.insert({key, JsonInterface::makeNew(inStr.str())});
+            std::ostringstream outStream;
+            outStream << value;
+            _data.insert({key, JsonEntity::makeNew(outStream.str())});
         }
 
         /// @brief Constructor from individual key-value pairs
@@ -50,7 +50,7 @@ namespace json
         JsonObject &operator=(JsonObject &&other);
 
         /// @brief Set the JSON-string the object represents
-        void setString(std::string str) override;
+        void setString(std::string raw) override;
         /// @brief Get the JSON-string the object represents
         [[nodiscard]] std::string getString() const override;
         /// @brief Returns a formatted string.
@@ -65,17 +65,20 @@ namespace json
         /// @param path A path accepted by fstream
         bool writeToFile(std::string path, JsonFormattingOptions options = defaultJsonFormattingOptions) const;
 
-        /// @brief Returns the value of keyas an array. Throws a std::runtime_error if the nth item is not an of another type.
+        /// @brief Returns the value of keyas an array. Throws a std::runtime_error if the nth entity is not an of another type.
         [[nodiscard]] JsonArray &A(std::string key);
-        /// @brief Returns the value of key as an object. Throws a std::runtime_error if the nth item is not an of another type.
+        /// @brief Returns the value of key as an object. Throws a std::runtime_error if the nth entity is not an of another type.
         [[nodiscard]] JsonObject &O(std::string key);
-        /// @brief Returns the value of key as a value. Throws a std::runtime_error if the nth item is not an of another type.
+        /// @brief Returns the value of key as a value. Throws a std::runtime_error if the nth entity is not an of another type.
         [[nodiscard]] JsonValue &V(std::string key);
         /// @brief Returns the value of key as a compact string.
         [[nodiscard]] std::string S(std::string key) const;
 
+        /// @brief Returns whether a value exists and is equal to "true" or not
+        [[nodiscard]] bool getBool(std::string key) const;
+
         /// @brief Gets the value of key.
-        /// @tparam T Type of the item. (Converted from string via operator<<(std::ostream&, std::string))
+        /// @tparam T Type of the entity. (Converted from string via operator<<(std::ostream&, std::string))
         template <typename T>
         [[nodiscard]] inline T get(std::string key) const
         {
@@ -91,7 +94,7 @@ namespace json
         /// @brief Removes an element from the array. Does nothing if the element doesn't exist.
         void remove(std::string key);
 
-        /// @brief Returns the number of items in the array
+        /// @brief Returns the number of entities in the array
         [[nodiscard]] size_t size() const override;
         /// @brief Returns true if the value of key is null
         [[nodiscard]] bool isNull(std::string key) const;

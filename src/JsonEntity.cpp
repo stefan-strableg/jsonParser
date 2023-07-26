@@ -1,4 +1,4 @@
-#include "../inc/JsonInterface.hpp"
+#include "../inc/JsonEntity.hpp"
 #include "../inc/JsonObject.hpp"
 #include "../inc/JsonArray.hpp"
 #include "../inc/JsonValue.hpp"
@@ -15,41 +15,41 @@ namespace json
         return formattingExampleObject.getStringF(*this);
     }
 
-    JsonInterface::JsonInterface(JsonInterfaceType t)
+    JsonEntity::JsonEntity(JsonEntityType t)
         : type(t)
     {
     }
 
-    JsonInterface *JsonInterface::makeNew(std::string str)
+    JsonEntity *JsonEntity::makeNew(std::string raw)
     {
-        strn::trim(str);
-        if (str.size() > 2 && *str.begin() == '{' && *(str.end() - 1) == '}')
+        strn::trim(raw);
+        if (raw.size() > 2 && *raw.begin() == '{' && *(raw.end() - 1) == '}')
         {
-            return new JsonObject(str);
+            return new JsonObject(raw);
         }
-        else if (str.size() > 2 && *str.begin() == '[' && *(str.end() - 1) == ']')
+        else if (raw.size() > 2 && *raw.begin() == '[' && *(raw.end() - 1) == ']')
         {
             auto ret = new JsonArray();
-            ret->setString(str);
+            ret->setString(raw);
             return ret;
         }
         else
         {
-            return new JsonValue(str);
+            return new JsonValue(raw);
         }
     }
 
-    JsonInterface::JsonInterfaceType JsonInterface::_getType() const
+    JsonEntity::JsonEntityType JsonEntity::_getType() const
     {
         return type;
     }
 
-    size_t JsonInterface::size() const
+    size_t JsonEntity::size() const
     {
         return 1;
     }
 
-    JsonInterface::~JsonInterface()
+    JsonEntity::~JsonEntity()
     {
     }
 
@@ -59,8 +59,8 @@ namespace json
     }
 }
 
-std::ostream &operator<<(std::ostream &os, const json::JsonInterface &j)
+std::ostream &operator<<(std::ostream &os, const json::JsonEntity &entity)
 {
-    os << j.getString();
+    os << entity.getString();
     return os;
 }

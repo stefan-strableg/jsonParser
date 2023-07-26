@@ -9,23 +9,23 @@
 namespace json
 {
     JsonObject::JsonObject()
-        : JsonInterface(JsonInterfaceType::object)
+        : JsonEntity(JsonEntityType::object)
     {
     }
 
-    JsonObject::JsonObject(std::string str)
-        : JsonInterface(JsonInterfaceType::object)
+    JsonObject::JsonObject(std::string raw)
+        : JsonEntity(JsonEntityType::object)
     {
-        setString(str);
+        setString(raw);
     }
 
     JsonObject::JsonObject(const JsonObject &other)
         : JsonObject()
     {
         _data.clear();
-        for (const auto &item : other._data)
+        for (const auto &entity : other._data)
         {
-            _data.insert({item.first, JsonInterface::makeNew(item.second->getString())});
+            _data.insert({entity.first, JsonEntity::makeNew(entity.second->getString())});
         }
     }
 
@@ -33,10 +33,10 @@ namespace json
         : JsonObject()
     {
         _data.clear();
-        for (auto &item : other._data)
+        for (auto &entity : other._data)
         {
-            _data.insert(item);
-            item.second = nullptr;
+            _data.insert(entity);
+            entity.second = nullptr;
         }
     }
 
@@ -45,59 +45,59 @@ namespace json
         if (this == &other)
             return *this;
 
-        for (auto &item : _data)
+        for (auto &entity : _data)
         {
-            delete item.second;
+            delete entity.second;
         }
 
         _data.clear();
 
-        for (const auto &item : other._data)
+        for (const auto &entity : other._data)
         {
-            _data.insert({item.first, JsonInterface::makeNew(item.second->getString())});
+            _data.insert({entity.first, JsonEntity::makeNew(entity.second->getString())});
         }
         return *this;
     }
 
     JsonObject &JsonObject::operator=(JsonObject &&other)
     {
-        for (auto &item : _data)
+        for (auto &entity : _data)
         {
-            delete item.second;
+            delete entity.second;
         }
 
         _data.clear();
 
-        for (auto &item : other._data)
+        for (auto &entity : other._data)
         {
-            _data.insert(item);
-            item.second = nullptr;
+            _data.insert(entity);
+            entity.second = nullptr;
         }
 
         return *this;
     }
 
-    void JsonObject::setString(std::string _string)
+    void JsonObject::setString(std::string raw)
     {
-        for (auto &item : _data)
+        for (auto &entity : _data)
         {
-            delete item.second;
+            delete entity.second;
         }
         _data.clear();
 
-        size_t i = 1,
-               tokStart = 1;
+        size_t currentIndex = 1,
+               tokenStartIndex = 1;
         uint16_t bracesLevel = 0,
                  bracketsLevel = 0;
-        std::pair<std::string, JsonInterface *> keyValPair = {"", nullptr};
+        std::pair<std::string, JsonEntity *> keyValPair = {"", nullptr};
         bool inQuote = false,
              backslash = false,
              inColonComma = false;
-        for (; i < _string.size() - 1; i++)
+        for (; currentIndex < raw.size() - 1; currentIndex++)
         {
             bool resetBackslash = backslash;
 
-            switch (_string[i])
+            switch (raw[currentIndex])
             {
             case '\\':
                 backslash = !backslash;
@@ -106,10 +106,10 @@ namespace json
                 if (!backslash && !inColonComma && bracesLevel == 0 && bracketsLevel == 0)
                 {
                     if (!inQuote)
-                        tokStart = i;
+                        tokenStartIndex = currentIndex;
                     else
                     {
-                        keyValPair.first = _string.substr(tokStart + 1, i - tokStart - 1);
+                        keyValPair.first = raw.substr(tokenStartIndex + 1, currentIndex - tokenStartIndex - 1);
                     }
                 }
                 if (!backslash)
@@ -135,13 +135,13 @@ namespace json
                 if (!inQuote && bracesLevel == 0 && bracketsLevel == 0)
                 {
                     inColonComma = true;
-                    tokStart = i + 1;
+                    tokenStartIndex = currentIndex + 1;
                 }
                 break;
             case ',':
                 if (inColonComma && !inQuote && bracesLevel == 0 && bracketsLevel == 0)
                 {
-                    keyValPair.second = JsonInterface::makeNew(_string.substr(tokStart, i - tokStart));
+                    keyValPair.second = JsonEntity::makeNew(raw.substr(tokenStartIndex, currentIndex - tokenStartIndex));
                     _data.insert(keyValPair);
                     inColonComma = false;
                 }
@@ -153,29 +153,29 @@ namespace json
 
         if (inColonComma)
         {
-            keyValPair.second = JsonInterface::makeNew(_string.substr(tokStart, i - tokStart));
+            keyValPair.second = JsonEntity::makeNew(raw.substr(tokenStartIndex, currentIndex - tokenStartIndex));
             _data.insert(keyValPair);
         }
     }
 
     std::string JsonObject::getString() const
     {
-        std::ostringstream outStr;
+        std::ostringstream outStream;
 
-        outStr << '{';
+        outStream << '{';
 
         size_t i = 0;
-        for (auto &e : _data)
+        for (auto &entity : _data)
         {
             i++;
-            outStr << '\"' << e.first << "\":" << e.second->getString();
+            outStream << '\"' << entity.first << "\":" << entity.second->getString();
             if (i < _data.size())
-                outStr << ',';
+                outStream << ',';
         }
 
-        outStr << '}';
+        outStream << '}';
 
-        return outStr.str();
+        return outStream.str();
     }
 
     bool JsonObject::readFromFile(std::string path)
@@ -202,7 +202,7 @@ namespace json
     {
         if (!_data.contains(key))
             throw std::out_of_range("JsonObject::A: there is no element with key " + key);
-        if (_data[key]->_getType() != JsonInterfaceType::array)
+        if (_data[key]->_getType() != JsonEntityType::array)
             throw std::runtime_error("JsonObject::A: Value of element with key " + key + " is not of type array");
         return dynamic_cast<JsonArray &>(*_data[key]);
     }
@@ -211,7 +211,7 @@ namespace json
     {
         if (!_data.contains(key))
             throw std::out_of_range("JsonObject::O: there is no element with key " + key);
-        if (_data[key]->_getType() != JsonInterfaceType::object)
+        if (_data[key]->_getType() != JsonEntityType::object)
             throw std::runtime_error("JsonObject::O: Value of element with key " + key + " is not of type object");
         return dynamic_cast<JsonObject &>(*_data[key]);
     }
@@ -220,7 +220,7 @@ namespace json
     {
         if (!_data.contains(key))
             throw std::out_of_range("JsonObject::V: there is no element with key " + key);
-        if (_data[key]->_getType() != JsonInterfaceType::value)
+        if (_data[key]->_getType() != JsonEntityType::value)
             throw std::runtime_error("JsonObject::V: Value of element with key " + key + " is not of type value");
         return dynamic_cast<JsonValue &>(*_data[key]);
     }
@@ -229,9 +229,14 @@ namespace json
     {
         if (!_data.contains(key))
             throw std::out_of_range("JsonObject::S: there is no element with key " + key);
-        if (_data.at(key)->_getType() != JsonInterfaceType::value)
+        if (_data.at(key)->_getType() != JsonEntityType::value)
             throw std::runtime_error("JsonObject::S: Value of element with key " + key + " is not of type string");
         return _data.at(key)->getString();
+    }
+    
+    bool JsonObject::getBool(std::string key) const
+    {
+        return _data.contains(key) && _data.at(key)->_getType() == JsonEntityType::value && _data.at(key)->getString() == "true";
     }
 
     std::string JsonObject::getType(std::string key) const
@@ -241,11 +246,11 @@ namespace json
 
         switch (_data.at(key)->_getType())
         {
-        case JsonInterfaceType::array:
+        case JsonEntityType::array:
             return "array";
-        case JsonInterfaceType::object:
+        case JsonEntityType::object:
             return "object";
-        case JsonInterfaceType::value:
+        case JsonEntityType::value:
             return "value";
         }
 
@@ -284,9 +289,9 @@ namespace json
 
     bool JsonObject::_isBottomLayer() const
     {
-        for (const auto &e : _data)
+        for (const auto &entity : _data)
         {
-            if (e.second->_getType() == JsonInterfaceType::object || e.second->_getType() == JsonInterfaceType::array)
+            if (entity.second->_getType() == JsonEntityType::object || entity.second->_getType() == JsonEntityType::array)
                 return false;
         }
         return true;
@@ -296,65 +301,65 @@ namespace json
     {
         if (options.forceCompact)
             return getString();
-        std::ostringstream outStr;
+        std::ostringstream outStream;
         bool isInline = options.forceInline || (options.inlineShortBottomLevelObjects && _isBottomLayer() && getString().size() < options.maxLengthToInline);
 
-        outStr << '{';
+        outStream << '{';
 
         if (isInline && options.spaceAfterOpeningBeforeClosingBrackets)
-            outStr << ' ';
+            outStream << ' ';
 
         if (!isInline)
-            outStr << '\n';
+            outStream << '\n';
 
         tabs++;
 
         size_t i = 0;
-        for (auto &e : _data)
+        for (auto &entity : _data)
         {
             i++;
             if (!isInline)
-                outStr << options._getTab(tabs);
+                outStream << options._getTab(tabs);
 
-            outStr << '\"' << e.first << '\"'
+            outStream << '\"' << entity.first << '\"'
                    << (options.spaceBeforeColon ? " " : "")
                    << ':'
                    << (options.spaceAfterColon ? " " : "");
 
-            const bool isItemInline = options.forceInline || (options.inlineShortBottomLevelObjects && e.second->_isBottomLayer() && e.second->getString().size() < options.maxLengthToInline);
+            const bool isItemInline = options.forceInline || (options.inlineShortBottomLevelObjects && entity.second->_isBottomLayer() && entity.second->getString().size() < options.maxLengthToInline);
 
-            if (!isInline && !isItemInline && options.firstBracketInNewline && e.second->_getType() != JsonInterfaceType::value)
-                outStr << '\n'
+            if (!isInline && !isItemInline && options.firstBracketInNewline && entity.second->_getType() != JsonEntityType::value)
+                outStream << '\n'
                        << options._getTab(tabs);
-            outStr << e.second->getStringF(options, tabs);
+            outStream << entity.second->getStringF(options, tabs);
 
             if (i < _data.size())
             {
-                outStr << ',';
+                outStream << ',';
                 if (options.spaceAfterComma)
-                    outStr << ' ';
+                    outStream << ' ';
             }
 
             if (!isInline && (options.lastBracketInNewline || i < _data.size()))
-                outStr << '\n';
+                outStream << '\n';
         }
 
         if (!isInline && options.lastBracketInNewline)
-            outStr << (tabs != 0 ? options._getTab(tabs - 1) : "");
+            outStream << (tabs != 0 ? options._getTab(tabs - 1) : "");
 
         if (isInline && options.spaceAfterOpeningBeforeClosingBrackets)
-            outStr << ' ';
+            outStream << ' ';
 
-        outStr << '}';
+        outStream << '}';
 
-        return outStr.str();
+        return outStream.str();
     }
 
     JsonObject::~JsonObject()
     {
-        for (auto &item : _data)
+        for (auto &entity : _data)
         {
-            delete item.second;
+            delete entity.second;
         }
     }
 
