@@ -10,10 +10,5 @@ int main(void)
 
   std::cout << jobj.getStringF() << '\n';
 
-  for (auto &e : jobj.O("Inhaber").A("Hobbys"))
-  {
-    std::cout << e << '\n';
-  }
-
   return EXIT_SUCCESS;
 }

@@ -65,7 +65,7 @@ namespace json
         [[nodiscard]] JsonValue &V(size_t index);
         /// @brief Returns the nth entity in the array as a compact string.
         [[nodiscard]] std::string S(size_t index) const;
-        
+
         /// @brief Returns whether a value exists and is equal to "true" or not
         [[nodiscard]] bool getBool(size_t index) const;
 
@@ -115,52 +115,5 @@ namespace json
 
         /// @brief Deconstructor
         ~JsonArray();
-
-        class Iterator
-        {
-        private:
-            std::vector<JsonInterface *>::iterator _current;
-
-        public:
-            // Constructor
-            Iterator(std::vector<JsonInterface *>::iterator current) : _current(current) {}
-
-            // Overload the dereference operator *
-            [[nodiscard]] JsonInterface &operator*() const
-            {
-                return **_current;
-            }
-
-            // Overload the pre-increment operator ++
-            Iterator &operator++()
-            {
-                ++_current;
-                return *this;
-            }
-
-            // Overload the post-increment operator ++
-            Iterator operator++(int)
-            {
-                Iterator temp = *this;
-                ++_current;
-                return temp;
-            }
-
-            // Overload the equality operator ==
-            [[nodiscard]] bool operator==(const Iterator &other) const
-            {
-                return _current == other._current;
-            }
-
-            // Overload the inequality operator !=
-            [[nodiscard]] bool operator!=(const Iterator &other) const
-            {
-                return _current != other._current;
-            }
-        };
-
-        [[nodiscard]] Iterator begin();
-
-        [[nodiscard]] Iterator end();
     };
-};
+}
