@@ -53,7 +53,7 @@ namespace json
     {
     }
 
-    bool isValidJson(std::string str)
+    bool isValidJson(std::string)
     {
         return false;
     }
