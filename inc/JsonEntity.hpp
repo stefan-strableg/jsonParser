@@ -67,7 +67,7 @@ namespace json
         JsonEntity(JsonEntityType type_);
 
         /// @brief Set the JSON-string the object represents
-        virtual void setString(std::string raw) = 0;
+        virtual void fromString(std::string raw) = 0;
 
         /// @brief Get the JSON-string the object represents
         [[nodiscard]] virtual std::string toString() const = 0;

@@ -6,10 +6,10 @@ namespace json
     JsonValue::JsonValue(std::string str)
         : JsonEntity(JsonEntityType::value)
     {
-        setString(str);
+        fromString(str);
     }
 
-    void JsonValue::setString(std::string raw)
+    void JsonValue::fromString(std::string raw)
     {
         _data = raw;
     }
@@ -32,5 +32,10 @@ namespace json
     std::string JsonValue::toStringF(const JsonFormattingOptions &, size_t) const
     {
         return _data;
+    }
+    
+    void JsonValue::setString(const std::string& str)
+    {
+        set<std::string>("\"" + str + "\"");
     }
 }

@@ -30,7 +30,7 @@ namespace json
         else if (raw.size() > 2 && *raw.begin() == '[' && *(raw.end() - 1) == ']')
         {
             auto ret = new JsonArray();
-            ret->setString(raw);
+            ret->fromString(raw);
             return ret;
         }
         else

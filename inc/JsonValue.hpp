@@ -34,7 +34,7 @@ namespace json
         }
 
         /// @brief Sets the value
-        void setString(std::string raw) override;
+        void fromString(std::string raw) override;
 
         /// @brief Gets the value as raw string
         std::string toString() const override;
@@ -52,12 +52,15 @@ namespace json
 
         /// @brief Sets the entity
         template <typename T>
-        inline void set(T val)
+        inline void set(const T& val)
         {
             std::ostringstream outStream;
             outStream << val;
             _data = outStream.str();
         }
+        
+        /// @brief sets a given string as String. Same as set<std::string>("\"" + str + "\"")
+        void setString(const std::string& str);
 
         /// @brief Returns the size of the object in JSON-entities
         size_t size() const override;

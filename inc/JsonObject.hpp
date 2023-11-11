@@ -54,7 +54,7 @@ namespace json
         JsonObject &operator=(JsonObject &&other);
 
         /// @brief Set the JSON-string the object represents
-        void setString(std::string raw) override;
+        void fromString(std::string raw) override;
         /// @brief Get the JSON-string the object represents
         [[nodiscard]] std::string toString() const override;
 

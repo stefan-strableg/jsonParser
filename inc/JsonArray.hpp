@@ -52,7 +52,7 @@ namespace json
         JsonArray &operator=(JsonArray &&other);
 
         /// @brief Set the JSON-string the array represents
-        void setString(std::string raw) override;
+        void fromString(std::string raw) override;
         /// @brief Get the JSON-String the array represents
         /// @note Use toStringF() for a formatted and more readable JSON-String
         [[nodiscard]] std::string toString() const override;

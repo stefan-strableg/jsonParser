@@ -68,7 +68,7 @@ namespace json
         return *this;
     }
 
-    void JsonArray::setString(std::string raw)
+    void JsonArray::fromString(std::string raw)
     {
         size_t currentIndex = 1,
                tokenStartIndex = 1;

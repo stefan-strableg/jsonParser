@@ -16,7 +16,7 @@ namespace json
     JsonObject::JsonObject(std::string raw)
         : JsonEntity(JsonEntityType::object)
     {
-        setString(raw);
+        fromString(raw);
     }
 
     JsonObject::JsonObject(const JsonObject &other)
@@ -77,7 +77,7 @@ namespace json
         return *this;
     }
 
-    void JsonObject::setString(std::string raw)
+    void JsonObject::fromString(std::string raw)
     {
         for (auto &entity : _data)
         {
@@ -185,7 +185,7 @@ namespace json
             return false;
         std::string inFileContents((std::istreambuf_iterator<char>(inFile)),
                                    (std::istreambuf_iterator<char>()));
-        setString(inFileContents);
+        fromString(inFileContents);
         return true;
     }
 
