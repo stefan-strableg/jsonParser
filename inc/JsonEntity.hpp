@@ -89,6 +89,7 @@ namespace json
         virtual ~JsonEntity();
     };
 
+    [[deprecated( "Not yet implemented, always false!" )]]	
     bool isValidJson(std::string json);
 }
 
