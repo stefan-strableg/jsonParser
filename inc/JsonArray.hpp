@@ -29,9 +29,10 @@ namespace json
     public:
         /// @brief Default-Constructor
         JsonArray();
+
         /// @brief Copy-Constructor
         JsonArray(const JsonArray &other);
-        /// @brief Move-Constructor
+
         /// @brief Constructor from individual elements
         template <typename T, typename... Ts>
         JsonArray(T t, Ts... ts)
@@ -41,33 +42,43 @@ namespace json
             _initialize(t, ts...);
         }
 
+        /// @brief Move-Constructor
         JsonArray(JsonArray &&other);
+
         /// @brief Copy-Assignment operator
         JsonArray &operator=(const JsonArray &other);
+
         /// @brief Move-Assignment operator
         JsonArray &operator=(JsonArray &&other);
 
         /// @brief Set the JSON-string the array represents
         void setString(std::string raw) override;
         /// @brief Get the JSON-String the array represents
-        /// @note Use getStringF() for a formatted and more readable JSON-String
-        [[nodiscard]] std::string getString() const override;
+        /// @note Use toStringF() for a formatted and more readable JSON-String
+        [[nodiscard]] std::string toString() const override;
+
         /// @brief Returns a formatted string.
         /// @param tabs  Indendation of all lines. Usually Zero.
         /// @param options Formatting options.
-        [[nodiscard]] std::string getStringF(const JsonFormattingOptions &options = defaultJsonFormattingOptions, size_t tabs = 0) const override;
+        [[nodiscard]] std::string toStringF(const JsonFormattingOptions &options = defaultJsonFormattingOptions, size_t tabs = 0) const override;
 
         /// @brief Returns the nth entity in the array as an array. Throws a std::runtime_error if the nth entity is not an of another type.
         [[nodiscard]] JsonArray &A(size_t index);
+
         /// @brief Returns the nth entity in the array as an object. Throws a std::runtime_error if the nth entity is not an of another type.
         [[nodiscard]] JsonObject &O(size_t index);
+
         /// @brief Returns the nth entity in the array as a value. Throws a std::runtime_error if the nth entity is not an of another type.
         [[nodiscard]] JsonValue &V(size_t index);
+
         /// @brief Returns the nth entity in the array as a compact string.
         [[nodiscard]] std::string S(size_t index) const;
 
         /// @brief Returns whether a value exists and is equal to "true" or not
         [[nodiscard]] bool getBool(size_t index) const;
+
+        /// @brief Returns the value at key or an empty string if key doesnt exist or is no string
+        [[nodiscard]] std::string getString(size_t index) const;
 
         /// @brief Gets the nth entity in the array.
         /// @tparam T Type of the entity. (Converted from string via operator<<(std::ostream&, std::string))
@@ -76,7 +87,7 @@ namespace json
         {
             if (_data.size() <= index)
                 return T();
-            return strn::string_to<T>(_data[index]->getString());
+            return strn::string_to<T>(_data[index]->toString());
         }
 
         /// @brief Adds an entity to the back of the array

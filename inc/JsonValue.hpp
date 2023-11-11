@@ -35,10 +35,12 @@ namespace json
 
         /// @brief Sets the value
         void setString(std::string raw) override;
+
         /// @brief Gets the value as raw string
-        std::string getString() const override;
-        /// @brief Same as getString in this class
-        std::string getStringF(const JsonFormattingOptions &options = defaultJsonFormattingOptions, size_t tabs = 0) const override;
+        std::string toString() const override;
+
+        /// @brief Same as toString in this class
+        std::string toStringF(const JsonFormattingOptions &options = defaultJsonFormattingOptions, size_t tabs = 0) const override;
 
         /// @brief Gets the value as T.
         /// @tparam T Type of the entity. (Converted from string via operator<<(std::ostream&, std::string))

@@ -19,10 +19,13 @@ namespace json
     public:
         /// @brief Default-Constructor
         JsonObject();
+
         /// @brief Constructor from a JSON-string
         JsonObject(std::string raw);
+
         /// @brief Copy-Constructor
         JsonObject(const JsonObject &other);
+
         /// @brief Move-Constructor
         JsonObject(JsonObject &&other);
 
@@ -46,36 +49,45 @@ namespace json
 
         /// @brief Copy-Assignment operator
         JsonObject &operator=(const JsonObject &other);
+
         /// @brief Move-Assignment operator
         JsonObject &operator=(JsonObject &&other);
 
         /// @brief Set the JSON-string the object represents
         void setString(std::string raw) override;
         /// @brief Get the JSON-string the object represents
-        [[nodiscard]] std::string getString() const override;
+        [[nodiscard]] std::string toString() const override;
+
         /// @brief Returns a formatted string.
         /// @param tabs  Indendation of all lines. Usually Zero.
         /// @param options Formatting options.
-        [[nodiscard]] std::string getStringF(const JsonFormattingOptions &options = defaultJsonFormattingOptions, size_t tabs = 0) const override;
+        [[nodiscard]] std::string toStringF(const JsonFormattingOptions &options = defaultJsonFormattingOptions, size_t tabs = 0) const override;
 
         /// @brief Reads a .json file
         /// @param path A path accepted by fstream
         bool readFromFile(std::string path);
+
         /// @brief Writes to a .json file
         /// @param path A path accepted by fstream
         bool writeToFile(std::string path, JsonFormattingOptions options = defaultJsonFormattingOptions) const;
 
-        /// @brief Returns the value of keyas an array. Throws a std::runtime_error if the nth entity is not an of another type.
+        /// @brief Returns the value of key as an array. Throws a std::runtime_error if the nth entity is not an of another type.
         [[nodiscard]] JsonArray &A(std::string key);
+
         /// @brief Returns the value of key as an object. Throws a std::runtime_error if the nth entity is not an of another type.
         [[nodiscard]] JsonObject &O(std::string key);
+
         /// @brief Returns the value of key as a value. Throws a std::runtime_error if the nth entity is not an of another type.
         [[nodiscard]] JsonValue &V(std::string key);
+
         /// @brief Returns the value of key as a compact string.
         [[nodiscard]] std::string S(std::string key) const;
 
         /// @brief Returns whether a value exists and is equal to "true" or not
         [[nodiscard]] bool getBool(std::string key) const;
+
+        /// @brief Returns the value at key or an empty string if key doesnt exist or is no string
+        [[nodiscard]] std::string getString(std::string key) const;
 
         /// @brief Gets the value of key.
         /// @tparam T Type of the entity. (Converted from string via operator<<(std::ostream&, std::string))
@@ -84,7 +96,7 @@ namespace json
         {
             if (!_data.contains(key))
                 return T();
-            return strn::string_to<T>(_data.at(key)->getString());
+            return strn::string_to<T>(_data.at(key)->toString());
         }
 
         /// @brief Returns the type of the value of key.
@@ -96,10 +108,13 @@ namespace json
 
         /// @brief Returns the number of entities in the array
         [[nodiscard]] size_t size() const override;
+
         /// @brief Returns true if the value of key is null
         [[nodiscard]] bool isNull(std::string key) const;
+
         /// @brief Returns true if the object contains key
         [[nodiscard]] bool contains(std::string key) const;
+
         /// @brief Returns true if the object is empty
         [[nodiscard]] bool isEmpty() const;
 

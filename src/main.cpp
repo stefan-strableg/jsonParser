@@ -8,7 +8,9 @@ int main(void)
   json::JsonObject jobj;
   jobj.readFromFile("data/json1.json");
 
-  std::cout << jobj.getStringF() << '\n';
+  std::cout << jobj.get<int>("Deckung") << "\n";
+  std::cout << jobj.getString("Nummer") << "\n";
+  std::cout << jobj.getString("Deckung") << "\n";
 
   return EXIT_SUCCESS;
 }

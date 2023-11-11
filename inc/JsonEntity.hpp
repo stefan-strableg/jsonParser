@@ -27,7 +27,7 @@ namespace json
         bool spaceAfterOpeningBeforeClosingBrackets = true;
         /// @brief Forces the entire output to be inline
         bool forceInline = false;
-        /// @brief Keeps the output as compact as possible (essentially the same as calling getString() instead of getStringF())
+        /// @brief Keeps the output as compact as possible (essentially the same as calling toString() instead of toStringF())
         bool forceCompact = false;
         /// @brief How many spaces to use as a tab. Set to 0 to instead use a '\\t'
         uint8_t tabSpaces = 4;
@@ -69,12 +69,12 @@ namespace json
         virtual void setString(std::string raw) = 0;
 
         /// @brief Get the JSON-string the object represents
-        [[nodiscard]] virtual std::string getString() const = 0;
+        [[nodiscard]] virtual std::string toString() const = 0;
 
         /// @brief Returns a formatted string.
         /// @param tabs Indendation of all lines. Usually Zero.
         /// @param options Formatting options.
-        [[nodiscard]] virtual std::string getStringF(const JsonFormattingOptions &options = defaultJsonFormattingOptions, size_t tabs = 0) const = 0;
+        [[nodiscard]] virtual std::string toStringF(const JsonFormattingOptions &options = defaultJsonFormattingOptions, size_t tabs = 0) const = 0;
 
         [[nodiscard]] virtual size_t size() const;
 

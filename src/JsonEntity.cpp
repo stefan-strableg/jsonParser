@@ -12,7 +12,7 @@ namespace json
 
     std::string JsonFormattingOptions::getFormattingExample() const
     {
-        return formattingExampleObject.getStringF(*this);
+        return formattingExampleObject.toStringF(*this);
     }
 
     JsonEntity::JsonEntity(JsonEntityType t)
@@ -61,6 +61,6 @@ namespace json
 
 std::ostream &operator<<(std::ostream &os, const json::JsonEntity &entity)
 {
-    os << entity.getString();
+    os << entity.toString();
     return os;
 }

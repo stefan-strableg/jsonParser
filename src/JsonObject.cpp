@@ -25,7 +25,7 @@ namespace json
         _data.clear();
         for (const auto &entity : other._data)
         {
-            _data.insert({entity.first, JsonEntity::makeNew(entity.second->getString())});
+            _data.insert({entity.first, JsonEntity::makeNew(entity.second->toString())});
         }
     }
 
@@ -54,7 +54,7 @@ namespace json
 
         for (const auto &entity : other._data)
         {
-            _data.insert({entity.first, JsonEntity::makeNew(entity.second->getString())});
+            _data.insert({entity.first, JsonEntity::makeNew(entity.second->toString())});
         }
         return *this;
     }
@@ -158,7 +158,7 @@ namespace json
         }
     }
 
-    std::string JsonObject::getString() const
+    std::string JsonObject::toString() const
     {
         std::ostringstream outStream;
 
@@ -168,7 +168,7 @@ namespace json
         for (auto &entity : _data)
         {
             i++;
-            outStream << '\"' << entity.first << "\":" << entity.second->getString();
+            outStream << '\"' << entity.first << "\":" << entity.second->toString();
             if (i < _data.size())
                 outStream << ',';
         }
@@ -194,7 +194,7 @@ namespace json
         std::ofstream outFile(path);
         if (!outFile.is_open())
             return false;
-        outFile << getStringF(options);
+        outFile << toStringF(options);
         return true;
     }
 
@@ -231,12 +231,26 @@ namespace json
             throw std::out_of_range("JsonObject::S: there is no element with key " + key);
         if (_data.at(key)->_getType() != JsonEntityType::value)
             throw std::runtime_error("JsonObject::S: Value of element with key " + key + " is not of type string");
-        return _data.at(key)->getString();
+        return _data.at(key)->toString();
     }
-    
+
     bool JsonObject::getBool(std::string key) const
     {
-        return _data.contains(key) && _data.at(key)->_getType() == JsonEntityType::value && _data.at(key)->getString() == "true";
+        return _data.contains(key) && _data.at(key)->_getType() == JsonEntityType::value && _data.at(key)->toString() == "true";
+    }
+
+    std::string JsonObject::getString(std::string key) const
+    {
+        std::string ret;
+        if (_data.contains(key) && _data.at(key)->_getType() == JsonEntityType::value)
+            ret = _data.at(key)->toString();
+        else
+            return std::string();
+
+        if (ret.size() < 2 || ret[0] != '\"' || ret[ret.size() - 1] != '\"')
+            return std::string();
+
+        return ret.substr(1, ret.size() - 2);
     }
 
     std::string JsonObject::getType(std::string key) const
@@ -274,7 +288,7 @@ namespace json
     {
         if (!_data.contains(key))
             throw std::runtime_error("JsonObject::isNull: there is no element with key " + key);
-        return _data.at(key)->getString() == "null";
+        return _data.at(key)->toString() == "null";
     }
 
     bool JsonObject::contains(std::string key) const
@@ -297,12 +311,12 @@ namespace json
         return true;
     }
 
-    std::string JsonObject::getStringF(const JsonFormattingOptions &options, size_t tabs) const
+    std::string JsonObject::toStringF(const JsonFormattingOptions &options, size_t tabs) const
     {
         if (options.forceCompact)
-            return getString();
+            return toString();
         std::ostringstream outStream;
-        bool isInline = options.forceInline || (options.inlineShortBottomLevelObjects && _isBottomLayer() && getString().size() < options.maxLengthToInline);
+        bool isInline = options.forceInline || (options.inlineShortBottomLevelObjects && _isBottomLayer() && toString().size() < options.maxLengthToInline);
 
         outStream << '{';
 
@@ -322,16 +336,16 @@ namespace json
                 outStream << options._getTab(tabs);
 
             outStream << '\"' << entity.first << '\"'
-                   << (options.spaceBeforeColon ? " " : "")
-                   << ':'
-                   << (options.spaceAfterColon ? " " : "");
+                      << (options.spaceBeforeColon ? " " : "")
+                      << ':'
+                      << (options.spaceAfterColon ? " " : "");
 
-            const bool isItemInline = options.forceInline || (options.inlineShortBottomLevelObjects && entity.second->_isBottomLayer() && entity.second->getString().size() < options.maxLengthToInline);
+            const bool isItemInline = options.forceInline || (options.inlineShortBottomLevelObjects && entity.second->_isBottomLayer() && entity.second->toString().size() < options.maxLengthToInline);
 
             if (!isInline && !isItemInline && options.firstBracketInNewline && entity.second->_getType() != JsonEntityType::value)
                 outStream << '\n'
-                       << options._getTab(tabs);
-            outStream << entity.second->getStringF(options, tabs);
+                          << options._getTab(tabs);
+            outStream << entity.second->toStringF(options, tabs);
 
             if (i < _data.size())
             {
