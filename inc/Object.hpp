@@ -7,27 +7,27 @@
 
 namespace json
 {
-    class JsonArray;
-    class JsonValue;
+    class Array;
+    class Value;
 
     /// @brief Represents a JSON-object
-    class JsonObject : public JsonEntity
+    class Object : public JsonEntity
     {
     private:
         std::map<std::string, JsonEntity *> _data;
 
     public:
         /// @brief Default-Constructor
-        JsonObject();
+        Object();
 
         /// @brief Constructor from a JSON-string
-        JsonObject(std::string raw);
+        Object(std::string raw);
 
         /// @brief Copy-Constructor
-        JsonObject(const JsonObject &other);
+        Object(const Object &other);
 
         /// @brief Move-Constructor
-        JsonObject(JsonObject &&other);
+        Object(Object &&other);
 
         /// @brief Inserts an entity into the object
         template <typename T>
@@ -41,17 +41,17 @@ namespace json
 
         /// @brief Constructor from individual key-value pairs
         template <typename T1, typename... Ts>
-        inline JsonObject(std::string key, T1 value, Ts... ts)
-            : JsonObject(ts...)
+        inline Object(std::string key, T1 value, Ts... ts)
+            : Object(ts...)
         {
             insert(key, value);
         }
 
         /// @brief Copy-Assignment operator
-        JsonObject &operator=(const JsonObject &other);
+        Object &operator=(const Object &other);
 
         /// @brief Move-Assignment operator
-        JsonObject &operator=(JsonObject &&other);
+        Object &operator=(Object &&other);
 
         /// @brief Set the JSON-string the object represents
         void fromString(std::string raw) override;
@@ -61,7 +61,7 @@ namespace json
         /// @brief Returns a formatted string.
         /// @param tabs  Indendation of all lines. Usually Zero.
         /// @param options Formatting options.
-        [[nodiscard]] std::string toStringF(const JsonFormattingOptions &options = defaultJsonFormattingOptions, size_t tabs = 0) const override;
+        [[nodiscard]] std::string toStringF(const FormattingOptions &options = defaultJsonFormattingOptions, size_t tabs = 0) const override;
 
         /// @brief Reads a .json file
         /// @param path A path accepted by fstream
@@ -69,16 +69,16 @@ namespace json
 
         /// @brief Writes to a .json file
         /// @param path A path accepted by fstream
-        bool writeToFile(std::string path, JsonFormattingOptions options = defaultJsonFormattingOptions) const;
+        bool writeToFile(std::string path, FormattingOptions options = defaultJsonFormattingOptions) const;
 
         /// @brief Returns the value of key as an array. Throws a std::runtime_error if the nth entity is not an of another type.
-        [[nodiscard]] JsonArray &A(std::string key);
+        [[nodiscard]] Array &A(std::string key);
 
         /// @brief Returns the value of key as an object. Throws a std::runtime_error if the nth entity is not an of another type.
-        [[nodiscard]] JsonObject &O(std::string key);
+        [[nodiscard]] Object &O(std::string key);
 
         /// @brief Returns the value of key as a value. Throws a std::runtime_error if the nth entity is not an of another type.
-        [[nodiscard]] JsonValue &V(std::string key);
+        [[nodiscard]] Value &V(std::string key);
 
         /// @brief Returns the value of key as a compact string.
         [[nodiscard]] std::string S(std::string key) const;
@@ -122,7 +122,7 @@ namespace json
         [[nodiscard]] bool _isBottomLayer() const override;
 
         /// @brief Destructor
-        ~JsonObject();
+        ~Object();
     };
 
 }

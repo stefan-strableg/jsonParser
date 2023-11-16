@@ -1,6 +1,6 @@
-#include "../inc/JsonObject.hpp"
-#include "../inc/JsonArray.hpp"
-#include "../inc/JsonValue.hpp"
+#include "../inc/Object.hpp"
+#include "../inc/Array.hpp"
+#include "../inc/Value.hpp"
 #include "../inc/string.hpp"
 #include <iostream>
 #include <sstream>
@@ -8,19 +8,19 @@
 
 namespace json
 {
-    JsonObject::JsonObject()
+    Object::Object()
         : JsonEntity(JsonEntityType::object)
     {
     }
 
-    JsonObject::JsonObject(std::string raw)
+    Object::Object(std::string raw)
         : JsonEntity(JsonEntityType::object)
     {
         fromString(raw);
     }
 
-    JsonObject::JsonObject(const JsonObject &other)
-        : JsonObject()
+    Object::Object(const Object &other)
+        : Object()
     {
         _data.clear();
         for (const auto &entity : other._data)
@@ -29,8 +29,8 @@ namespace json
         }
     }
 
-    JsonObject::JsonObject(JsonObject &&other)
-        : JsonObject()
+    Object::Object(Object &&other)
+        : Object()
     {
         _data.clear();
         for (auto &entity : other._data)
@@ -40,7 +40,7 @@ namespace json
         }
     }
 
-    JsonObject &JsonObject::operator=(const JsonObject &other)
+    Object &Object::operator=(const Object &other)
     {
         if (this == &other)
             return *this;
@@ -59,7 +59,7 @@ namespace json
         return *this;
     }
 
-    JsonObject &JsonObject::operator=(JsonObject &&other)
+    Object &Object::operator=(Object &&other)
     {
         for (auto &entity : _data)
         {
@@ -77,7 +77,7 @@ namespace json
         return *this;
     }
 
-    void JsonObject::fromString(std::string raw)
+    void Object::fromString(std::string raw)
     {
         for (auto &entity : _data)
         {
@@ -158,7 +158,7 @@ namespace json
         }
     }
 
-    std::string JsonObject::toString() const
+    std::string Object::toString() const
     {
         std::ostringstream outStream;
 
@@ -178,7 +178,7 @@ namespace json
         return outStream.str();
     }
 
-    bool JsonObject::readFromFile(std::string path)
+    bool Object::readFromFile(std::string path)
     {
         std::ifstream inFile(path);
         if (!inFile.is_open())
@@ -189,7 +189,7 @@ namespace json
         return true;
     }
 
-    bool JsonObject::writeToFile(std::string path, JsonFormattingOptions options) const
+    bool Object::writeToFile(std::string path, FormattingOptions options) const
     {
         std::ofstream outFile(path);
         if (!outFile.is_open())
@@ -198,34 +198,34 @@ namespace json
         return true;
     }
 
-    JsonArray &JsonObject::A(std::string key)
+    Array &Object::A(std::string key)
     {
         if (!_data.contains(key))
             throw std::out_of_range("JsonObject::A: there is no element with key " + key);
         if (_data[key]->_getType() != JsonEntityType::array)
             throw std::runtime_error("JsonObject::A: Value of element with key " + key + " is not of type array");
-        return dynamic_cast<JsonArray &>(*_data[key]);
+        return dynamic_cast<Array &>(*_data[key]);
     }
 
-    JsonObject &JsonObject::O(std::string key)
+    Object &Object::O(std::string key)
     {
         if (!_data.contains(key))
             throw std::out_of_range("JsonObject::O: there is no element with key " + key);
         if (_data[key]->_getType() != JsonEntityType::object)
             throw std::runtime_error("JsonObject::O: Value of element with key " + key + " is not of type object");
-        return dynamic_cast<JsonObject &>(*_data[key]);
+        return dynamic_cast<Object &>(*_data[key]);
     }
 
-    JsonValue &JsonObject::V(std::string key)
+    Value &Object::V(std::string key)
     {
         if (!_data.contains(key))
             throw std::out_of_range("JsonObject::V: there is no element with key " + key);
         if (_data[key]->_getType() != JsonEntityType::value)
             throw std::runtime_error("JsonObject::V: Value of element with key " + key + " is not of type value");
-        return dynamic_cast<JsonValue &>(*_data[key]);
+        return dynamic_cast<Value &>(*_data[key]);
     }
 
-    std::string JsonObject::S(std::string key) const
+    std::string Object::S(std::string key) const
     {
         if (!_data.contains(key))
             throw std::out_of_range("JsonObject::S: there is no element with key " + key);
@@ -234,12 +234,12 @@ namespace json
         return _data.at(key)->toString();
     }
 
-    bool JsonObject::getBool(std::string key) const
+    bool Object::getBool(std::string key) const
     {
         return _data.contains(key) && _data.at(key)->_getType() == JsonEntityType::value && _data.at(key)->toString() == "true";
     }
 
-    std::string JsonObject::getString(std::string key) const
+    std::string Object::getString(std::string key) const
     {
         std::string ret;
         if (_data.contains(key) && _data.at(key)->_getType() == JsonEntityType::value)
@@ -253,7 +253,7 @@ namespace json
         return ret.substr(1, ret.size() - 2);
     }
 
-    std::string JsonObject::getType(std::string key) const
+    std::string Object::getType(std::string key) const
     {
         if (!_data.contains(key))
             throw std::runtime_error("JsonObject::getType: there is no element with key " + key);
@@ -271,7 +271,7 @@ namespace json
         return "invalid type";
     }
 
-    void JsonObject::remove(std::string key)
+    void Object::remove(std::string key)
     {
         if (!_data.contains(key))
             return;
@@ -279,29 +279,29 @@ namespace json
         _data.erase(key);
     }
 
-    size_t JsonObject::size() const
+    size_t Object::size() const
     {
         return _data.size();
     }
 
-    bool JsonObject::isNull(std::string key) const
+    bool Object::isNull(std::string key) const
     {
         if (!_data.contains(key))
             throw std::runtime_error("JsonObject::isNull: there is no element with key " + key);
         return _data.at(key)->toString() == "null";
     }
 
-    bool JsonObject::contains(std::string key) const
+    bool Object::contains(std::string key) const
     {
         return _data.contains(key);
     }
 
-    bool JsonObject::isEmpty() const
+    bool Object::isEmpty() const
     {
         return _data.empty();
     }
 
-    bool JsonObject::_isBottomLayer() const
+    bool Object::_isBottomLayer() const
     {
         for (const auto &entity : _data)
         {
@@ -311,7 +311,7 @@ namespace json
         return true;
     }
 
-    std::string JsonObject::toStringF(const JsonFormattingOptions &options, size_t tabs) const
+    std::string Object::toStringF(const FormattingOptions &options, size_t tabs) const
     {
         if (options.forceCompact)
             return toString();
@@ -369,7 +369,7 @@ namespace json
         return outStream.str();
     }
 
-    JsonObject::~JsonObject()
+    Object::~Object()
     {
         for (auto &entity : _data)
         {

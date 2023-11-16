@@ -6,7 +6,7 @@
 namespace json
 {
     /// @brief Options to control the formatting of generated JSON-string
-    struct JsonFormattingOptions
+    struct FormattingOptions
     {
         /// @brief Sets the first Bracket of Objects and Arrays to be in the next line, at the same indentation as the key
         bool firstBracketInNewline = false;
@@ -46,7 +46,7 @@ namespace json
         [[nodiscard]] std::string getFormattingExample() const;
     };
 
-    extern JsonFormattingOptions defaultJsonFormattingOptions;
+    extern FormattingOptions defaultJsonFormattingOptions;
 
     /// @brief Base class for all Json-entities
     class JsonEntity
@@ -75,7 +75,7 @@ namespace json
         /// @brief Returns a formatted string.
         /// @param tabs Indendation of all lines. Usually Zero.
         /// @param options Formatting options.
-        [[nodiscard]] virtual std::string toStringF(const JsonFormattingOptions &options = defaultJsonFormattingOptions, size_t tabs = 0) const = 0;
+        [[nodiscard]] virtual std::string toStringF(const FormattingOptions &options = defaultJsonFormattingOptions, size_t tabs = 0) const = 0;
 
         [[nodiscard]] virtual size_t size() const;
 
@@ -89,8 +89,7 @@ namespace json
         virtual ~JsonEntity();
     };
 
-    [[deprecated( "Not yet implemented, always false!" )]]	
-    bool isValidJson(std::string json);
+    [[deprecated("Not yet implemented, always false!")]] bool isValidJson(std::string json);
 }
 
 std::ostream &operator<<(std::ostream &os, const json::JsonEntity &entity);

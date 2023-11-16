@@ -5,7 +5,7 @@
 
 int main(void)
 {
-  json::JsonObject jobj;
+  json::Object jobj;
   jobj.readFromFile("data/json1.json");
 
   std::cout << jobj.get<int>("Deckung") << "\n";

@@ -1,16 +1,16 @@
 #include "../inc/JsonEntity.hpp"
-#include "../inc/JsonObject.hpp"
-#include "../inc/JsonArray.hpp"
-#include "../inc/JsonValue.hpp"
+#include "../inc/Object.hpp"
+#include "../inc/Array.hpp"
+#include "../inc/Value.hpp"
 #include "../inc/string.hpp"
 
 namespace json
 {
-    JsonFormattingOptions defaultJsonFormattingOptions;
+    FormattingOptions defaultJsonFormattingOptions;
 
-    JsonObject formattingExampleObject("{\"bottom level array\":[\"type\", \"array\"],\"bottom level object\":{\"type\":\"object\"},\"empty array\":[],\"empty object\":{},\"float Key\":6.9,\"int Key\":42,\"nested arrays\":[\"These:\",[[[\"are\"]]],\"nested\",\"arrays\"],\"nested objects\":{\"some\":{\"nested\":{\"objects\":{}}},\"are\":\"here\"},\"nested objects and arrays\":{\"these\":[\"are\",{\"arr\":[\"rays\"],\"nested\":\"objects\"}]},\"str Key\":\"String\"}");
+    Object formattingExampleObject("{\"bottom level array\":[\"type\", \"array\"],\"bottom level object\":{\"type\":\"object\"},\"empty array\":[],\"empty object\":{},\"float Key\":6.9,\"int Key\":42,\"nested arrays\":[\"These:\",[[[\"are\"]]],\"nested\",\"arrays\"],\"nested objects\":{\"some\":{\"nested\":{\"objects\":{}}},\"are\":\"here\"},\"nested objects and arrays\":{\"these\":[\"are\",{\"arr\":[\"rays\"],\"nested\":\"objects\"}]},\"str Key\":\"String\"}");
 
-    std::string JsonFormattingOptions::getFormattingExample() const
+    std::string FormattingOptions::getFormattingExample() const
     {
         return formattingExampleObject.toStringF(*this);
     }
@@ -25,17 +25,17 @@ namespace json
         strn::trim(raw);
         if (raw.size() > 2 && *raw.begin() == '{' && *(raw.end() - 1) == '}')
         {
-            return new JsonObject(raw);
+            return new Object(raw);
         }
         else if (raw.size() > 2 && *raw.begin() == '[' && *(raw.end() - 1) == ']')
         {
-            auto ret = new JsonArray();
+            auto ret = new Array();
             ret->fromString(raw);
             return ret;
         }
         else
         {
-            return new JsonValue(raw);
+            return new Value(raw);
         }
     }
 

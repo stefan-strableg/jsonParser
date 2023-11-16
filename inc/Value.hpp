@@ -7,18 +7,22 @@ namespace json
 {
 
     /// @brief Represents a JSON-value
-    class JsonValue : public JsonEntity
+    class Value : public JsonEntity
     {
     private:
         std::string _data;
 
     public:
+        /// @brief Default Constructor
+        Value();
+
         /// @brief Constructor from string
-        JsonValue(std::string raw);
+        Value(std::string raw);
 
         /// @brief Parameterized Constructor
         template <typename T>
-        inline JsonValue(T t)
+        inline Value(T t)
+            : Value()
         {
             std::ostringstream outStream;
             outStream << t;
@@ -27,7 +31,7 @@ namespace json
 
         /// @brief Assignment operator
         template <typename T>
-        inline JsonValue &operator=(T t)
+        inline Value &operator=(T t)
         {
             set(t);
             return *this;
@@ -40,7 +44,7 @@ namespace json
         std::string toString() const override;
 
         /// @brief Same as toString in this class
-        std::string toStringF(const JsonFormattingOptions &options = defaultJsonFormattingOptions, size_t tabs = 0) const override;
+        std::string toStringF(const FormattingOptions &options = defaultJsonFormattingOptions, size_t tabs = 0) const override;
 
         /// @brief Gets the value as T.
         /// @tparam T Type of the entity. (Converted from string via operator<<(std::ostream&, std::string))
@@ -52,15 +56,15 @@ namespace json
 
         /// @brief Sets the entity
         template <typename T>
-        inline void set(const T& val)
+        inline void set(const T &val)
         {
             std::ostringstream outStream;
             outStream << val;
             _data = outStream.str();
         }
-        
+
         /// @brief sets a given string as String. Same as set<std::string>("\"" + str + "\"")
-        void setString(const std::string& str);
+        void setString(const std::string &str);
 
         /// @brief Returns the size of the object in JSON-entities
         size_t size() const override;
