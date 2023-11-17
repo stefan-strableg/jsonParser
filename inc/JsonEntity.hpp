@@ -107,6 +107,9 @@ namespace json
     class Value;
 
     template <>
+    JsonEntity *JsonEntity::makeNew<JsonEntity>(const JsonEntity &raw);
+
+    template <>
     JsonEntity *JsonEntity::makeNew<Object>(const Object &raw);
 
     template <>
@@ -114,6 +117,11 @@ namespace json
 
     template <>
     JsonEntity *JsonEntity::makeNew<Value>(const Value &raw);
+
+    template <>
+    JsonEntity *JsonEntity::makeNew<std::string>(const std::string &raw);
+    template <>
+    JsonEntity *JsonEntity::makeNew<const char *>(const char *const &raw);
 }
 
 std::ostream &operator<<(std::ostream &os, const json::JsonEntity &entity);

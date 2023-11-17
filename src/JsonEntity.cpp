@@ -59,6 +59,21 @@ namespace json
     }
 
     template <>
+    JsonEntity *JsonEntity::makeNew<JsonEntity>(const JsonEntity &raw)
+    {
+        if (const Object *obj = dynamic_cast<const Object *>(&raw))
+            return makeNew(*obj);
+
+        if (const Array *arr = dynamic_cast<const Array *>(&raw))
+            return makeNew(*arr);
+
+        if (const Value *val = dynamic_cast<const Value *>(&raw))
+            return makeNew(*val);
+
+        throw std::logic_error("JsonEntity was neither Object, nor Array, nor Value");
+    }
+
+    template <>
     JsonEntity *JsonEntity::makeNew<Object>(const Object &raw)
     {
         return new Object(raw);
@@ -74,6 +89,18 @@ namespace json
     JsonEntity *JsonEntity::makeNew<Value>(const Value &raw)
     {
         return new Value(raw);
+    }
+
+    template <>
+    JsonEntity *JsonEntity::makeNew<std::string>(const std::string &raw)
+    {
+        return new Value("\"" + raw + "\"");
+    }
+
+    template <>
+    JsonEntity *JsonEntity::makeNew<const char *>(const char *const &raw)
+    {
+        return makeNew(std::string(raw));
     }
 }
 
