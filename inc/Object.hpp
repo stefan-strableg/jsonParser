@@ -20,8 +20,8 @@ namespace json
         /// @brief Default-Constructor
         Object();
 
-        /// @brief Constructor from a JSON-string
-        Object(std::string raw);
+        /// @brief Create from a JSON-string
+        static Object createFromString(const std::string &str);
 
         /// @brief Copy-Constructor
         Object(const Object &other);
@@ -34,9 +34,7 @@ namespace json
         inline void insert(std::string key, T value)
         {
             remove(key);
-            std::ostringstream outStream;
-            outStream << value;
-            _data.insert({key, JsonEntity::makeNew(outStream.str())});
+            _data.insert({key, JsonEntity::makeNew(value)});
         }
 
         /// @brief Constructor from individual key-value pairs

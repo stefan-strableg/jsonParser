@@ -4,39 +4,39 @@
 #include "../inc/Value.hpp"
 #include "../inc/string.hpp"
 
+#include <iostream>
+
 namespace json
 {
     FormattingOptions defaultJsonFormattingOptions;
 
-    Object formattingExampleObject("{\"bottom level array\":[\"type\", \"array\"],\"bottom level object\":{\"type\":\"object\"},\"empty array\":[],\"empty object\":{},\"float Key\":6.9,\"int Key\":42,\"nested arrays\":[\"These:\",[[[\"are\"]]],\"nested\",\"arrays\"],\"nested objects\":{\"some\":{\"nested\":{\"objects\":{}}},\"are\":\"here\"},\"nested objects and arrays\":{\"these\":[\"are\",{\"arr\":[\"rays\"],\"nested\":\"objects\"}]},\"str Key\":\"String\"}");
+    Object formattingExampleObject = Object::createFromString("{\"bottom level array\":[\"type\", \"array\"],\"bottom level object\":{\"type\":\"object\"},\"empty array\":[],\"empty object\":{},\"float Key\":6.9,\"int Key\":42,\"nested arrays\":[\"These:\",[[[\"are\"]]],\"nested\",\"arrays\"],\"nested objects\":{\"some\":{\"nested\":{\"objects\":{}}},\"are\":\"here\"},\"nested objects and arrays\":{\"these\":[\"are\",{\"arr\":[\"rays\"],\"nested\":\"objects\"}]},\"str Key\":\"String\"}");
 
     std::string FormattingOptions::getFormattingExample() const
     {
         return formattingExampleObject.toStringF(*this);
     }
 
+    JsonEntity *JsonEntity::makeNewFromString(std::string raw)
+    {
+        strn::trim(raw);
+        if (raw.length() < 2)
+            return new Value(raw);
+
+        if (raw[0] == '{' && raw[raw.size() - 1] == '}')
+            return new Object(Object::createFromString(raw));
+
+        if (raw[0] == '[' && raw[raw.size() - 1] == ']')
+        {
+            return new Array(Array::createFromString(raw));
+        }
+
+        return new Value(raw);
+    }
+
     JsonEntity::JsonEntity(JsonEntityType t)
         : type(t)
     {
-    }
-
-    JsonEntity *JsonEntity::makeNew(std::string raw)
-    {
-        strn::trim(raw);
-        if (raw.size() > 2 && *raw.begin() == '{' && *(raw.end() - 1) == '}')
-        {
-            return new Object(raw);
-        }
-        else if (raw.size() > 2 && *raw.begin() == '[' && *(raw.end() - 1) == ']')
-        {
-            auto ret = new Array();
-            ret->fromString(raw);
-            return ret;
-        }
-        else
-        {
-            return new Value(raw);
-        }
     }
 
     JsonEntity::JsonEntityType JsonEntity::_getType() const
@@ -56,6 +56,24 @@ namespace json
     bool isValidJson(std::string)
     {
         return false;
+    }
+
+    template <>
+    JsonEntity *JsonEntity::makeNew<Object>(const Object &raw)
+    {
+        return new Object(raw);
+    }
+
+    template <>
+    JsonEntity *JsonEntity::makeNew<Array>(const Array &raw)
+    {
+        return new Array(raw);
+    }
+
+    template <>
+    JsonEntity *JsonEntity::makeNew<Value>(const Value &raw)
+    {
+        return new Value(raw);
     }
 }
 

@@ -2,6 +2,8 @@
 
 #include <string>
 #include <cstdint>
+#include <sstream>
+#include <iostream>
 
 namespace json
 {
@@ -59,9 +61,20 @@ namespace json
             object
         } type;
 
+        static JsonEntity *makeNewFromString(std::string raw);
+
     public:
         /// @brief [Library internal] Creates a new Json-entity and returns a pointer to it.
-        [[nodiscard]] static JsonEntity *makeNew(std::string raw);
+        template <typename T>
+        [[nodiscard]] static JsonEntity *makeNew(const T &raw)
+        {
+            std::string str;
+            std::ostringstream osstr;
+            osstr << raw;
+            str = osstr.str();
+
+            return makeNewFromString(str);
+        }
 
         /// @brief Parameterized Constructor
         JsonEntity(JsonEntityType type_);
@@ -89,7 +102,18 @@ namespace json
         virtual ~JsonEntity();
     };
 
-    [[deprecated("Not yet implemented, always false!")]] bool isValidJson(std::string json);
+    class Object;
+    class Array;
+    class Value;
+
+    template <>
+    JsonEntity *JsonEntity::makeNew<Object>(const Object &raw);
+
+    template <>
+    JsonEntity *JsonEntity::makeNew<Array>(const Array &raw);
+
+    template <>
+    JsonEntity *JsonEntity::makeNew<Value>(const Value &raw);
 }
 
 std::ostream &operator<<(std::ostream &os, const json::JsonEntity &entity);

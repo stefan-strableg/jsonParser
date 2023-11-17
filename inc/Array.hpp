@@ -33,6 +33,9 @@ namespace json
         /// @brief Copy-Constructor
         Array(const Array &other);
 
+        /// @brief Create from a JSON-string
+        static Array createFromString(const std::string &str);
+
         /// @brief Constructor from individual elements
         template <typename T, typename... Ts>
         Array(T t, Ts... ts)
@@ -94,18 +97,14 @@ namespace json
         template <typename T>
         inline void push_back(T value)
         {
-            std::ostringstream outStream;
-            outStream << value;
-            _data.push_back(JsonEntity::makeNew(outStream.str()));
+            insert(_data.size(), value);
         }
 
         /// @brief Inserts an entity at the index n
         template <typename T>
-        inline void insert(size_t n, T val)
+        inline void insert(size_t n, T value)
         {
-            std::ostringstream outStream;
-            outStream << val;
-            _data.insert(_data.begin() + n, JsonEntity::makeNew(outStream.str()));
+            _data.insert(_data.begin() + n, JsonEntity::makeNew(value));
         }
 
         /// @brief Erases an entity at the given index

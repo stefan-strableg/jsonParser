@@ -33,6 +33,13 @@ namespace json
         }
     }
 
+    Array Array::createFromString(const std::string &str)
+    {
+        Array ret;
+        ret.fromString(str);
+        return ret;
+    }
+
     Array &Array::operator=(const Array &other)
     {
         if (this == &other)

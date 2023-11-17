@@ -13,10 +13,11 @@ namespace json
     {
     }
 
-    Object::Object(std::string raw)
-        : JsonEntity(JsonEntityType::object)
+    Object Object::createFromString(const std::string &str)
     {
-        fromString(raw);
+        Object ret;
+        ret.fromString(str);
+        return ret;
     }
 
     Object::Object(const Object &other)
