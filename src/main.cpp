@@ -6,11 +6,12 @@
 int main(void)
 {
   json::Object jobj;
-  jobj.readFromFile("data/json1.json");
+  jobj.readFromFile("../data/json1.json");
+
+  std::cout << jobj.toStringF() << "\n";
 
   std::cout << jobj.get<int>("Deckung") << "\n";
   std::cout << jobj.getString("Nummer") << "\n";
-  std::cout << jobj.getString("Deckung") << "\n";
 
   return EXIT_SUCCESS;
 }
