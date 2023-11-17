@@ -15,6 +15,7 @@ add_library(libJsonParser
             inc/string.hpp src/string.cpp
             inc/Value.hpp src/Value.cpp)
 
-add_executable(json-parser-test src/main.cpp)
-
-target_link_libraries(json-parser-test PRIVATE libJsonParser)
+if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
+    add_executable(test main.cpp)
+    target_link_libraries(test PRIVATE libJsonParser)
+endif()
