@@ -152,7 +152,7 @@ namespace json
     {
         if (_data.size() <= index)
             throw std::out_of_range("JsonArray::A: index " + std::to_string(index) + " is out of bounds");
-        if (_data[index]->_getType() != JsonEntityType::array)
+        if (_data[index]->getType() != JsonEntityType::array)
             throw std::runtime_error("JsonArray::A: Element " + std::to_string(index) + " is not of type array");
         return dynamic_cast<Array &>(*_data[index]);
     }
@@ -161,7 +161,7 @@ namespace json
     {
         if (_data.size() <= index)
             throw std::out_of_range("JsonArray::O: index " + std::to_string(index) + " is out of bounds");
-        if (_data[index]->_getType() != JsonEntityType::object)
+        if (_data[index]->getType() != JsonEntityType::object)
             throw std::runtime_error("JsonArray::O: Element " + std::to_string(index) + " is not of type object");
         return dynamic_cast<Object &>(*_data[index]);
     }
@@ -170,7 +170,7 @@ namespace json
     {
         if (_data.size() <= index)
             throw std::out_of_range("JsonArray::V: index " + std::to_string(index) + " is out of bounds");
-        if (_data[index]->_getType() != JsonEntityType::value)
+        if (_data[index]->getType() != JsonEntityType::value)
             throw std::runtime_error("JsonArray::V: Element " + std::to_string(index) + " is not of type value");
         return dynamic_cast<Value &>(*_data[index]);
     }
@@ -179,20 +179,20 @@ namespace json
     {
         if (_data.size() <= index)
             throw std::out_of_range("JsonArray::S: index " + std::to_string(index) + " is out of bounds");
-        if (_data.at(index)->_getType() != JsonEntityType::value)
+        if (_data.at(index)->getType() != JsonEntityType::value)
             throw std::runtime_error("JsonArray::S: Element " + std::to_string(index) + " is not of type string");
         return _data.at(index)->toString();
     }
 
     bool Array::getBool(size_t index) const
     {
-        return _data.size() >= index && _data.at(index)->_getType() == JsonEntityType::value && _data.at(index)->toString() == "true";
+        return _data.size() >= index && _data.at(index)->getType() == JsonEntityType::value && _data.at(index)->toString() == "true";
     }
 
     std::string Array::getString(size_t index) const
     {
         std::string ret;
-        if (_data.size() > index && _data.at(index)->_getType() == JsonEntityType::value)
+        if (_data.size() > index && _data.at(index)->getType() == JsonEntityType::value)
             ret = _data.at(index)->toString();
         else
             return std::string();
@@ -218,7 +218,7 @@ namespace json
         if (_data.size() <= index)
             throw std::out_of_range("JsonArray::getType index " + std::to_string(index) + " is out of bounds");
 
-        switch (_data[index]->_getType())
+        switch (_data[index]->getType())
         {
         case JsonEntityType::array:
             return "array";
@@ -235,11 +235,11 @@ namespace json
         return _data.size();
     }
 
-    bool Array::_isBottomLayer() const
+    bool Array::isBottomLayer() const
     {
         for (const auto &entity : _data)
         {
-            if (entity->_getType() == JsonEntityType::object || entity->_getType() == JsonEntityType::array)
+            if (entity->getType() == JsonEntityType::object || entity->getType() == JsonEntityType::array)
                 return false;
         }
         return true;
@@ -250,7 +250,7 @@ namespace json
         if (options.forceCompact)
             return toString();
         std::ostringstream outStream;
-        bool isInline = options.forceInline || (options.inlineShortBottomLevelArrays && _isBottomLayer() && toString().size() < options.maxLengthToInline);
+        bool isInline = options.forceInline || (options.inlineShortBottomLevelArrays && isBottomLayer() && toString().size() < options.maxLengthToInline);
 
         // if (!isInline && (options.firstBracketInNewline) && tabs != 0)
         //     outStr << '\n'
@@ -274,7 +274,7 @@ namespace json
             if (!isInline)
                 outStream << options._getTab(tabs);
 
-            if (!isInline && options.firstBracketInNewline && entity->_getType() != JsonEntityType::value && entity->_getType() != JsonEntityType::array)
+            if (!isInline && options.firstBracketInNewline && entity->getType() != JsonEntityType::value && entity->getType() != JsonEntityType::array)
                 outStream << '\n'
                           << options._getTab(tabs);
             outStream << entity->toStringF(options, tabs);

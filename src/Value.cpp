@@ -29,7 +29,7 @@ namespace json
         return 1;
     }
 
-    bool Value::_isBottomLayer() const
+    bool Value::isBottomLayer() const
     {
         return true;
     }

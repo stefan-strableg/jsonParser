@@ -70,6 +70,6 @@ namespace json
         size_t size() const override;
 
         /// @brief [library internal] Returns true when the array does not contain any arrays or objects.
-        bool _isBottomLayer() const override;
+        bool isBottomLayer() const override;
     };
 }

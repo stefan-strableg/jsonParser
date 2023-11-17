@@ -39,7 +39,7 @@ namespace json
     {
     }
 
-    JsonEntity::JsonEntityType JsonEntity::_getType() const
+    JsonEntity::JsonEntityType JsonEntity::getType() const
     {
         return type;
     }

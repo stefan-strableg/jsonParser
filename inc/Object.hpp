@@ -117,7 +117,7 @@ namespace json
         [[nodiscard]] bool isEmpty() const;
 
         /// @brief [library internal] Returns true when the array does not contain any arrays or objects.
-        [[nodiscard]] bool _isBottomLayer() const override;
+        [[nodiscard]] bool isBottomLayer() const override;
 
         /// @brief Destructor
         ~Object();

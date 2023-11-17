@@ -7,6 +7,10 @@
 
 namespace json
 {
+    class Object;
+    class Array;
+    class Value;
+
     /// @brief Options to control the formatting of generated JSON-string
     struct FormattingOptions
     {
@@ -32,8 +36,16 @@ namespace json
         bool forceInline = false;
         /// @brief Keeps the output as compact as possible (essentially the same as calling toString() instead of toStringF())
         bool forceCompact = false;
-        /// @brief How many spaces to use as a tab. Set to 0 to instead use a '\\t'
+        /// @brief How many spaces to use as a tab. Set to 0 to instead use a '\t'
         uint8_t tabSpaces = 4;
+
+        /// @brief Returns a example JSON-string to showcase the format
+        [[nodiscard]] std::string getFormattingExample() const;
+
+    private:
+        friend Object;
+        friend Array;
+        friend Value;
 
         /// @brief [library internal] Returns a string representing the indentation
         [[nodiscard]] inline std::string _getTab(uint8_t tabs) const
@@ -43,9 +55,6 @@ namespace json
                 ret += tabSpaces == 0 ? std::string(1, '\t') : std::string(tabSpaces, ' ');
             return ret;
         }
-
-        /// @brief Returns a example JSON-string to showcase the format
-        [[nodiscard]] std::string getFormattingExample() const;
     };
 
     extern FormattingOptions defaultJsonFormattingOptions;
@@ -61,21 +70,7 @@ namespace json
             object
         } type;
 
-        static JsonEntity *makeNewFromString(std::string raw);
-
     public:
-        /// @brief [Library internal] Creates a new Json-entity and returns a pointer to it.
-        template <typename T>
-        [[nodiscard]] static JsonEntity *makeNew(const T &raw)
-        {
-            std::string str;
-            std::ostringstream osstr;
-            osstr << raw;
-            str = osstr.str();
-
-            return makeNewFromString(str);
-        }
-
         /// @brief Parameterized Constructor
         JsonEntity(JsonEntityType type_);
 
@@ -92,19 +87,34 @@ namespace json
 
         [[nodiscard]] virtual size_t size() const;
 
-        /// @brief [library internal] Returns the type of the Json-entity
-        [[nodiscard]] JsonEntity::JsonEntityType _getType() const;
+        /// @brief Returns the type of the Json-entity
+        [[nodiscard]] JsonEntity::JsonEntityType getType() const;
 
-        /// @brief [library internal] Returns true when the array does not contain any arrays or objects.
-        [[nodiscard]] virtual bool _isBottomLayer() const = 0;
+        /// @brief Returns true when the array does not contain any arrays or objects. Used internally for formatting.
+        [[nodiscard]] virtual bool isBottomLayer() const = 0;
 
         /// @brief Deconstructor
         virtual ~JsonEntity();
-    };
 
-    class Object;
-    class Array;
-    class Value;
+    private:
+        /// @brief [Library internal] Creates a new Json-entity and returns a pointer to it.
+        template <typename T>
+        [[nodiscard]] static JsonEntity *makeNew(const T &raw)
+        {
+            std::string str;
+            std::ostringstream osstr;
+            osstr << raw;
+            str = osstr.str();
+
+            return makeNewFromString(str);
+        }
+
+        static JsonEntity *makeNewFromString(std::string raw);
+
+        friend Object;
+        friend Array;
+        friend Value;
+    };
 
     template <>
     JsonEntity *JsonEntity::makeNew<JsonEntity>(const JsonEntity &raw);
