@@ -1,6 +1,7 @@
 # Up next
 
-* IJsonConvertable
+* ICloneable
+* Make JsonEntity "more" abstract (virtual)
 * Validation-Functionality
 * Streaming parsing
 * Better errors

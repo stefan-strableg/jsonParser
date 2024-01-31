@@ -1,6 +1,8 @@
 #pragma once
 #include "JsonEntity.hpp"
 #include "string.hpp"
+#include "compat.hpp"
+
 #include <sstream>
 #include <iostream>
 #include <map>
@@ -17,6 +19,8 @@ namespace json
         std::map<std::string, JsonEntity *> _data;
 
     public:
+        JsonEntity *getJsonClone() const override;
+
         /// @brief Default-Constructor
         Object();
 
@@ -97,7 +101,7 @@ namespace json
         template <typename T>
         [[nodiscard]] inline T get(std::string key) const
         {
-            if (!_data.contains(key))
+            if (!MAP_CONTAINS(_data, key))
                 return T();
             return strn::string_to<T>(_data.at(key)->toString());
         }

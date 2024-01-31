@@ -2,6 +2,8 @@
 
 #include "JsonEntity.hpp"
 #include "string.hpp"
+#include "compat.hpp"
+
 #include <vector>
 
 namespace json
@@ -27,6 +29,8 @@ namespace json
         }
 
     public:
+        JsonEntity *getJsonClone() const override;
+
         /// @brief Default-Constructor
         Array();
 
@@ -129,10 +133,10 @@ namespace json
         }
 
         /// @brief Erases an entity at the given index
-        void erase(size_t index);
+        void remove(size_t index);
 
         /// @brief Erases entities between start and end - 1 (inclusive)
-        void erase(size_t start, size_t end);
+        void remove(size_t start, size_t length);
 
         /// @brief Returns the type of the nth entity in the array.
         /// @return "Array", "Object" or "Value"

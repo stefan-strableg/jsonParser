@@ -9,6 +9,12 @@
 
 namespace json
 {
+
+    JsonEntity *Object::getJsonClone() const
+    {
+        return new Object(*this);
+    }
+
     Object::Object()
         : JsonEntity(JsonEntityType::object)
     {
@@ -202,7 +208,7 @@ namespace json
 
     Array &Object::A(std::string key)
     {
-        if (!_data.contains(key))
+        if (!MAP_CONTAINS(_data, key))
             throw std::out_of_range("JsonObject::A: there is no element with key " + key);
         if (_data[key]->getType() != JsonEntityType::array)
             throw std::runtime_error("JsonObject::A: Value of element with key " + key + " is not of type array");
@@ -211,7 +217,7 @@ namespace json
 
     Object &Object::O(std::string key)
     {
-        if (!_data.contains(key))
+        if (!MAP_CONTAINS(_data, key))
             throw std::out_of_range("JsonObject::O: there is no element with key " + key);
         if (_data[key]->getType() != JsonEntityType::object)
             throw std::runtime_error("JsonObject::O: Value of element with key " + key + " is not of type object");
@@ -220,7 +226,7 @@ namespace json
 
     Value &Object::V(std::string key)
     {
-        if (!_data.contains(key))
+        if (!MAP_CONTAINS(_data, key))
             throw std::out_of_range("JsonObject::V: there is no element with key " + key);
         if (_data[key]->getType() != JsonEntityType::value)
             throw std::runtime_error("JsonObject::V: Value of element with key " + key + " is not of type value");
@@ -229,7 +235,7 @@ namespace json
 
     std::string Object::S(std::string key) const
     {
-        if (!_data.contains(key))
+        if (!MAP_CONTAINS(_data, key))
             throw std::out_of_range("JsonObject::S: there is no element with key " + key);
         if (_data.at(key)->getType() != JsonEntityType::value)
             throw std::runtime_error("JsonObject::S: Value of element with key " + key + " is not of type string");
@@ -238,13 +244,13 @@ namespace json
 
     bool Object::getBool(std::string key) const
     {
-        return _data.contains(key) && _data.at(key)->getType() == JsonEntityType::value && _data.at(key)->toString() == "true";
+        return MAP_CONTAINS(_data, key) && _data.at(key)->getType() == JsonEntityType::value && _data.at(key)->toString() == "true";
     }
 
     std::string Object::getString(std::string key) const
     {
         std::string ret;
-        if (_data.contains(key) && _data.at(key)->getType() == JsonEntityType::value)
+        if (MAP_CONTAINS(_data, key) && _data.at(key)->getType() == JsonEntityType::value)
             ret = _data.at(key)->toString();
         else
             return std::string();
@@ -257,7 +263,7 @@ namespace json
 
     std::string Object::getType(std::string key) const
     {
-        if (!_data.contains(key))
+        if (!MAP_CONTAINS(_data, key))
             throw std::runtime_error("JsonObject::getType: there is no element with key " + key);
 
         switch (_data.at(key)->getType())
@@ -275,7 +281,7 @@ namespace json
 
     void Object::remove(std::string key)
     {
-        if (!_data.contains(key))
+        if (!MAP_CONTAINS(_data, key))
             return;
         delete _data[key];
         _data.erase(key);
@@ -288,14 +294,14 @@ namespace json
 
     bool Object::isNull(std::string key) const
     {
-        if (!_data.contains(key))
+        if (!MAP_CONTAINS(_data, key))
             throw std::runtime_error("JsonObject::isNull: there is no element with key " + key);
         return _data.at(key)->toString() == "null";
     }
 
     bool Object::contains(std::string key) const
     {
-        return _data.contains(key);
+        return MAP_CONTAINS(_data, key);
     }
 
     bool Object::isEmpty() const

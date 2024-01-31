@@ -5,15 +5,15 @@
 #include <sstream>
 #include <iostream>
 
+#include "ICloneable.hpp"
+#include "compat.hpp"
+
 namespace json
 {
+
     class Object;
     class Array;
     class Value;
-    class IJsonConvertable;
-
-    template <typename T>
-    concept JsonConvertable = std::is_base_of<IJsonConvertable, T>::value;
 
     /// @brief Options to control the formatting of generated JSON-string
     struct FormattingOptions
@@ -64,7 +64,7 @@ namespace json
     extern FormattingOptions defaultJsonFormattingOptions;
 
     /// @brief Base class for all Json-entities
-    class JsonEntity
+    class JsonEntity : json::ICloneable
     {
     protected:
         enum JsonEntityType : uint8_t
@@ -75,6 +75,8 @@ namespace json
         } type;
 
     public:
+        virtual JsonEntity *getJsonClone() const override = 0;
+
         /// @brief Parameterized Constructor
         JsonEntity(JsonEntityType type_);
 
@@ -103,7 +105,15 @@ namespace json
     private:
         /// @brief [Library internal] Creates a new Json-entity and returns a pointer to it.
         template <typename T>
-        [[nodiscard]] static JsonEntity *makeNew(const T &raw)
+        [[nodiscard]] static inline typename std::enable_if<std::is_base_of<ICloneable, T>::value, JsonEntity *>::type
+        makeNew(const T &jsonCloneable)
+        {
+            return jsonCloneable.getJsonClone();
+        }
+
+        template <typename T>
+        [[nodiscard]] static inline typename std::enable_if<!std::is_base_of<ICloneable, T>::value, JsonEntity *>::type
+        makeNew(const T &raw)
         {
             std::string str;
             std::ostringstream osstr;
@@ -113,29 +123,24 @@ namespace json
             return makeNewFromString(str);
         }
 
+        [[nodiscard]] static JsonEntity *makeNewValue(const std::string &str);
+
+        [[nodiscard]] static JsonEntity *makeNew(const std::string &str)
+        {
+            return makeNewValue("\"" + str + "\"");
+        }
+
+        [[nodiscard]] static JsonEntity *makeNew(const char *str)
+        {
+            return makeNew(std::string(str));
+        }
+
         static JsonEntity *makeNewFromString(std::string raw);
 
         friend Object;
         friend Array;
         friend Value;
     };
-
-    template <>
-    JsonEntity *JsonEntity::makeNew<JsonEntity>(const JsonEntity &entity);
-
-    template <>
-    JsonEntity *JsonEntity::makeNew<Object>(const Object &object);
-
-    template <>
-    JsonEntity *JsonEntity::makeNew<Array>(const Array &array);
-
-    template <>
-    JsonEntity *JsonEntity::makeNew<Value>(const Value &value);
-
-    template <>
-    JsonEntity *JsonEntity::makeNew<std::string>(const std::string &str);
-    template <>
-    JsonEntity *JsonEntity::makeNew<const char *>(const char *const &str);
 
 }
 

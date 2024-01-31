@@ -1,4 +1,6 @@
 #pragma once
+#include "compat.hpp"
+
 #include <string>
 #include <sstream>
 #include <algorithm>

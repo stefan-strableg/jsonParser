@@ -2,6 +2,7 @@
 
 #include "JsonEntity.hpp"
 #include "string.hpp"
+#include "compat.hpp"
 
 namespace json
 {
@@ -13,6 +14,8 @@ namespace json
         std::string _data;
 
     public:
+        JsonEntity *getJsonClone() const override;
+
         /// @brief Default Constructor
         Value();
 

@@ -7,6 +7,10 @@
 
 namespace json
 {
+    JsonEntity *Array::getJsonClone() const
+    {
+        return new Array(*this);
+    }
 
     Array::Array()
         : JsonEntity(JsonEntityType::array)
@@ -203,14 +207,14 @@ namespace json
         return ret.substr(1, ret.size() - 2);
     }
 
-    void Array::erase(size_t index)
+    void Array::remove(size_t index)
     {
         _data.erase(_data.begin() + index);
     }
 
-    void Array::erase(size_t start, size_t end)
+    void Array::remove(size_t start, size_t length)
     {
-        _data.erase(_data.begin() + start, _data.begin() + end);
+        _data.erase(_data.begin() + start, _data.begin() + start + length);
     }
 
     std::string Array::getType(size_t index) const

@@ -1,5 +1,5 @@
 #include "../inc/JsonEntity.hpp"
-#include "../inc/IJsonConvertable.hpp"
+#include "../inc/ICloneable.hpp"
 #include "../inc/Object.hpp"
 #include "../inc/Array.hpp"
 #include "../inc/Value.hpp"
@@ -16,6 +16,11 @@ namespace json
     std::string FormattingOptions::getFormattingExample() const
     {
         return formattingExampleObject.toStringF(*this);
+    }
+
+    JsonEntity *JsonEntity::makeNewValue(const std::string &str)
+    {
+        return new Value(str);
     }
 
     JsonEntity *JsonEntity::makeNewFromString(std::string str)
@@ -57,39 +62,6 @@ namespace json
     bool isValidJson(std::string)
     {
         return false;
-    }
-
-    template <>
-    JsonEntity *JsonEntity::makeNew<JsonEntity>(const JsonEntity &entity)
-    {
-        if (const Object *obj = dynamic_cast<const Object *>(&entity))
-            return makeNew(*obj);
-
-        if (const Array *arr = dynamic_cast<const Array *>(&entity))
-            return makeNew(*arr);
-
-        if (const Value *val = dynamic_cast<const Value *>(&entity))
-            return makeNew(*val);
-
-        throw std::logic_error("JsonEntity was neither Object, nor Array, nor Value");
-    }
-
-    template <>
-    JsonEntity *JsonEntity::makeNew<Object>(const Object &object)
-    {
-        return new Object(object);
-    }
-
-    template <>
-    JsonEntity *JsonEntity::makeNew<Array>(const Array &array)
-    {
-        return new Array(array);
-    }
-
-    template <>
-    JsonEntity *JsonEntity::makeNew<Value>(const Value &value)
-    {
-        return new Value(value);
     }
 
     template <>

@@ -3,6 +3,11 @@
 
 namespace json
 {
+    JsonEntity *Value::getJsonClone() const
+    {
+        return new Value(*this);
+    }
+
     Value::Value()
         : JsonEntity(JsonEntity::value)
     {
