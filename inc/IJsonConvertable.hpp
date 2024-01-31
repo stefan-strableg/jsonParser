@@ -1,8 +1,9 @@
 #pragma once
-#include "JsonEntity.hpp"
 
 namespace json
 {
+    class JsonEntity;
+
     struct IJsonConvertable
     {
     public:

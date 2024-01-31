@@ -41,7 +41,7 @@ namespace json
 
         /// @brief Create from individual elements
         template <typename T, typename... Ts>
-        static Array fromValues(T t, Ts... ts)
+        static inline Array fromValues(T t, Ts... ts)
         {
             Array ret;
             ret._data.reserve(sizeof...(Ts) + 1);
@@ -50,13 +50,13 @@ namespace json
         }
 
         template <typename Container>
-        static Array fromContainer(Container &container)
+        static inline Array fromContainer(Container &container)
         {
             return fromContainer(container.begin(), container.end());
         }
 
         template <typename Iterator>
-        static Array fromContainer(Iterator begin, Iterator end)
+        static inline Array fromContainer(Iterator begin, Iterator end)
         {
             Array ret;
 
