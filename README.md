@@ -4,34 +4,93 @@ Use doxygen to create the documentation.
 
 # Features
 
-This project features a wide variety of tools to 
-* Read .json files and JSON-strings
-* Easily Modify values, objects and arrays
-* Create .json files or JSON-strings with highly customizable formatting
+* Pretty formatting of JSON with plenty of options
+* Easy-to-use interfaces
+* Reading from Files
+* Writing to files
+* An Interface you can implement to automatically convert your Classes to JSON
 
-## Parsing JSON-strings
+## Creating JSON
 
-Create object from string or set it later:
+Create object from string, from values or set it later:
 ```cpp
-    json::JsonObject object("{"Key": "Value"}");
+    using namespace json;
 
-    object.setString("{"AnotherKey": "AnotherValue"}");
-```
+    Object a = Object::fromString("{\"key\":\"value\"}");
 
-Create a unformatted or formatted string from a JsonObject:
-```cpp
-    // unformatted
-    std::cout << object.getString() << "\n";
+    Object b = Object::fromKeyValuePairs("key1", "value",
+                                              "key2", 5,
+                                              "key3", 2.4);
+    Object c;
+    c.loadString("{\"key\":\"value\"}");
+
     
-    // unformatted
-    std::cout << object << "\n";
+    Array d = Array::fromString("{1,2,3}");
 
-    // formatted
-    std::cout << object.getStringF() << "\n";
+    Array e = Array::fromValues("value", 5, 2.4);
+
+    Array f;
+    f.loadString("{1,2,3}");
 ```
+
+## Simple Access and Modification of Values
+
+Its easy to read values into specific Objects:
+
+```cpp
+    int i = object.get<int>("key");
+    float i = object.get<float>("key");
+
+    std::string str = object.get<std::string>("key");
+    // Or simply:
+    str = object.S("SomeKey");
+```
+
+As well as to modify them:
+
+```cpp
+    object.V("key1") = 2;
+    object.V("key2") = 2;
+    object.V("key3") = "Hello World!";
+    object.V("key4") = json::Array::fromValues(1,'a',"nice");;
+
+    object.remove("key2");
+
+    array.V(2) = 1;
+    array.push_back("Hello World!");
+    array.remove(4,3); // Removes 3 elements starting with the 4th one
+```
+
+You can very easily access nested **A**rrays, **O**bjects and **V**alues per Reference:
+
+```cpp
+    json::Object object;
+    object.readFromFile("data.json");
+
+    object.A("key1").erase(1,3);
+    object.O("key2").insert("keyX", "value");
+    object.V("key3") = "SomeValue";
+
+    object.O("keyA").A("keyB").push_back(5.f);
+```
+
+You use your Class `T` in insertions, constructors and the `=`-Operator if you implement the `IConvertibleToJson`-Interface:
+
+```cpp
+    JsonEntity *YourClass::toJson() const
+    {
+        json::Object* ret = new json::Object();
+
+        *ret = json::Object::fromKeyValuePairs("temp", temperature,
+                                               "wind", windspeed);
+
+        return ret;
+    }
+```
+
 ## Simple loading from and writing to files
 
-Simply load JSON from a filepath as string:
+Simply load JSON from a file:
 ```cpp
     if (!object.readFromFile("data.json"))
         std::cout << "Failed to load file\n";
@@ -41,14 +100,31 @@ Or write to a file:
     if (!object.writeToFile("data.json"))
         std::cout << "Failed to write to file\n";
 ```
+
 ## Highly customizable JSON-formatting
 
-The output format of getStringF() is customizable via JsonFormattingOptions:
+Create a unformatted or formatted string from an Object or Array:
 ```cpp
-    json::JsonObject object;
+    json::Object object;
+    // unformatted
+    std::cout << object.getString() << '\n';
+    
+    // unformatted
+    std::cout << object << '\n';
+
+    // formatted
+    std::cout << object.getStringF() << '\n';
+```
+
+The output format of getStringF() is customizable via JsonFormattingOptions:
+
+```cpp
+    using namespace json;
+
+    Object object;
     object.readFromFile("data.json");
 
-    json::JsonFormattingOptions options;
+    FormattingOptions options;
 
     options.firstBracketInNewline = true;   
     options.spaceBeforeColon = true; 
@@ -59,36 +135,8 @@ The output format of getStringF() is customizable via JsonFormattingOptions:
 ```
 The formatting options are described in the documentation. 
 
-## Simple Access and Modification of Values
+You can also format when writing to a file:
 
-Simply access (nested) Arrays, Objects and Values:
 ```cpp
-    json::JsonObject object;
-    object.readFromFile("data.json");
-
-    object.A("SomeArrayKey").erase(1,3);
-    object.O("SomeObjectKey").insert("Key", "\"Value\"");
-    object.V("SomeKey") = "\"SomeValue\"";
-
-    object.O("SomeObjectKey").A("SomeNestedArray").push_back(5.f);
-
-    // Convenience for getting the string of objects
-    std::cout << object.S("SomeKey")
-```
-### Getting and Setting
-
-Easily convert the JSON-values to other data types.  
-```cpp
-    json::JsonObject object;
-    object.readFromFile("data.json");
-
-    int i = object.get<int>("SomeNumber");
-    float f = object.get<float>("SomeFloatingPointNumber");
-    CustomType t = object.get<CustomType>("SomeFloatingPointNumber");
-
-    int j = object.A("SomeArray").get<int>("SomeOtherNumber");
-```
-Own conversions can be added by overloading the ostream operator.
-```cpp
-    std::ostream& operator<<(std::ostream&, YourType)
+    object.writeToFile("data.json", formattingOptions);
 ```

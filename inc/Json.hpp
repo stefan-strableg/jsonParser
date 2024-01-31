@@ -4,4 +4,4 @@
 #include "Object.hpp"
 #include "Value.hpp"
 #include "Raw.hpp"
-#include "ICloneable.hpp"
+#include "IConvertableToJson.hpp"

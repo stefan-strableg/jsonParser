@@ -1,5 +1,5 @@
 #include "../inc/JsonEntity.hpp"
-#include "../inc/ICloneable.hpp"
+#include "../inc/IConvertableToJson.hpp"
 #include "../inc/Object.hpp"
 #include "../inc/Array.hpp"
 #include "../inc/Value.hpp"
@@ -18,12 +18,12 @@ namespace json
         return formattingExampleObject.toStringF(*this);
     }
 
-    JsonEntity *JsonEntity::makeNewValue(const std::string &str)
+    JsonEntity *JsonEntity::_makeNewValue(const std::string &str)
     {
         return new Value(str);
     }
 
-    JsonEntity *JsonEntity::makeNewFromString(std::string str)
+    JsonEntity *JsonEntity::_makeNewFromString(std::string str)
     {
         strn::trim(str);
         if (str.length() < 2)
@@ -65,15 +65,15 @@ namespace json
     }
 
     template <>
-    JsonEntity *JsonEntity::makeNew<std::string>(const std::string &str)
+    JsonEntity *JsonEntity::_makeNew<std::string>(const std::string &str)
     {
         return new Value("\"" + str + "\"");
     }
 
     template <>
-    JsonEntity *JsonEntity::makeNew<const char *>(const char *const &str)
+    JsonEntity *JsonEntity::_makeNew<const char *>(const char *const &str)
     {
-        return makeNew(std::string(str));
+        return _makeNew(std::string(str));
     }
 }
 

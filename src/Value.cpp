@@ -3,7 +3,7 @@
 
 namespace json
 {
-    JsonEntity *Value::getJsonClone() const
+    JsonEntity *Value::toJson() const
     {
         return new Value(*this);
     }

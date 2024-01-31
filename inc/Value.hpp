@@ -14,7 +14,8 @@ namespace json
         std::string _data;
 
     public:
-        JsonEntity *getJsonClone() const override;
+        /// @brief Implements json::IConvertableToJson
+        JsonEntity *toJson() const override;
 
         /// @brief Default Constructor
         Value();

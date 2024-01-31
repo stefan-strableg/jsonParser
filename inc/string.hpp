@@ -70,7 +70,7 @@ namespace strn
         if (str.empty()) // to avoid weird behavior when reading empty strings
             return T();
         T ret;
-        std::stringstream iss(str);
+        std::istringstream iss(str);
         iss >> ret;
         return ret;
     }

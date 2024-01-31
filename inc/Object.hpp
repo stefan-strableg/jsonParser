@@ -19,7 +19,7 @@ namespace json
         std::map<std::string, JsonEntity *> _data;
 
     public:
-        JsonEntity *getJsonClone() const override;
+        JsonEntity *toJson() const override;
 
         /// @brief Default-Constructor
         Object();
@@ -37,7 +37,7 @@ namespace json
         template <typename T>
         inline void insert(std::string key, T value)
         {
-            _data.insert({key, JsonEntity::makeNew(value)});
+            _data.insert({key, JsonEntity::_makeNew(value)});
         }
 
         /// @brief Create from individual key-value pairs

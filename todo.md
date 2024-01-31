@@ -1,7 +1,6 @@
 # Up next
 
-* ICloneable
-* Make JsonEntity "more" abstract (virtual)
+* Read Classes from Json
 * Validation-Functionality
 * Streaming parsing
 * Better errors

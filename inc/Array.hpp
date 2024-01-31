@@ -29,7 +29,8 @@ namespace json
         }
 
     public:
-        JsonEntity *getJsonClone() const override;
+        /// @brief Implements json::IConvertableToJson
+        JsonEntity *toJson() const override;
 
         /// @brief Default-Constructor
         Array();
@@ -129,7 +130,7 @@ namespace json
         template <typename T>
         inline void insert(size_t n, T value)
         {
-            _data.insert(_data.begin() + n, JsonEntity::makeNew(value));
+            _data.insert(_data.begin() + n, JsonEntity::_makeNew(value));
         }
 
         /// @brief Erases an entity at the given index

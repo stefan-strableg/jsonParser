@@ -5,7 +5,7 @@
 #include <sstream>
 #include <iostream>
 
-#include "ICloneable.hpp"
+#include "IConvertableToJson.hpp"
 #include "compat.hpp"
 
 namespace json
@@ -64,7 +64,7 @@ namespace json
     extern FormattingOptions defaultJsonFormattingOptions;
 
     /// @brief Base class for all Json-entities
-    class JsonEntity : json::ICloneable
+    class JsonEntity : json::IConvertableToJson
     {
     protected:
         enum JsonEntityType : uint8_t
@@ -75,7 +75,8 @@ namespace json
         } type;
 
     public:
-        virtual JsonEntity *getJsonClone() const override = 0;
+        /// @brief Implements json::IConvertableToJson
+        virtual JsonEntity *toJson() const override = 0;
 
         /// @brief Parameterized Constructor
         JsonEntity(JsonEntityType type_);
@@ -91,7 +92,7 @@ namespace json
         /// @param options Formatting options.
         [[nodiscard]] virtual std::string toStringF(const FormattingOptions &options = defaultJsonFormattingOptions, size_t tabs = 0) const = 0;
 
-        [[nodiscard]] virtual size_t size() const;
+        [[nodiscard]] virtual size_t size() const = 0;
 
         /// @brief Returns the type of the Json-entity
         [[nodiscard]] JsonEntity::JsonEntityType getType() const;
@@ -105,37 +106,37 @@ namespace json
     private:
         /// @brief [Library internal] Creates a new Json-entity and returns a pointer to it.
         template <typename T>
-        [[nodiscard]] static inline typename std::enable_if<std::is_base_of<ICloneable, T>::value, JsonEntity *>::type
-        makeNew(const T &jsonCloneable)
+        [[nodiscard]] static inline typename std::enable_if<std::is_base_of<IConvertableToJson, T>::value, JsonEntity *>::type
+        _makeNew(const T &jsonCloneable)
         {
-            return jsonCloneable.getJsonClone();
+            return jsonCloneable.toJson();
         }
 
         template <typename T>
-        [[nodiscard]] static inline typename std::enable_if<!std::is_base_of<ICloneable, T>::value, JsonEntity *>::type
-        makeNew(const T &raw)
+        [[nodiscard]] static inline typename std::enable_if<!std::is_base_of<IConvertableToJson, T>::value, JsonEntity *>::type
+        _makeNew(const T &raw)
         {
             std::string str;
             std::ostringstream osstr;
             osstr << raw;
             str = osstr.str();
 
-            return makeNewFromString(str);
+            return _makeNewFromString(str);
         }
 
-        [[nodiscard]] static JsonEntity *makeNewValue(const std::string &str);
-
-        [[nodiscard]] static JsonEntity *makeNew(const std::string &str)
+        [[nodiscard]] static JsonEntity *_makeNew(const std::string &str)
         {
-            return makeNewValue("\"" + str + "\"");
+            return _makeNewValue("\"" + str + "\"");
         }
 
-        [[nodiscard]] static JsonEntity *makeNew(const char *str)
+        [[nodiscard]] static JsonEntity *_makeNew(const char *str)
         {
-            return makeNew(std::string(str));
+            return _makeNew(std::string(str));
         }
 
-        static JsonEntity *makeNewFromString(std::string raw);
+        [[nodiscard]] static JsonEntity *_makeNewValue(const std::string &str);
+
+        [[nodiscard]] static JsonEntity *_makeNewFromString(std::string raw);
 
         friend Object;
         friend Array;

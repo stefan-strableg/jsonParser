@@ -10,7 +10,7 @@
 namespace json
 {
 
-    JsonEntity *Object::getJsonClone() const
+    JsonEntity *Object::toJson() const
     {
         return new Object(*this);
     }
@@ -33,7 +33,7 @@ namespace json
         _data.clear();
         for (const auto &entity : other._data)
         {
-            _data.insert({entity.first, JsonEntity::makeNew(*entity.second)});
+            _data.insert({entity.first, JsonEntity::_makeNew(*entity.second)});
         }
     }
 
@@ -62,7 +62,7 @@ namespace json
 
         for (const auto &entity : other._data)
         {
-            _data.insert({entity.first, JsonEntity::makeNew(*entity.second)});
+            _data.insert({entity.first, JsonEntity::_makeNew(*entity.second)});
         }
         return *this;
     }
@@ -149,7 +149,7 @@ namespace json
             case ',':
                 if (inColonComma && !inQuote && bracesLevel == 0 && bracketsLevel == 0)
                 {
-                    keyValPair.second = JsonEntity::makeNew(Raw(strn::trim_c(raw.substr(tokenStartIndex, currentIndex - tokenStartIndex))));
+                    keyValPair.second = JsonEntity::_makeNew(Raw(strn::trim_c(raw.substr(tokenStartIndex, currentIndex - tokenStartIndex))));
                     _data.insert(keyValPair);
                     inColonComma = false;
                 }
@@ -161,7 +161,7 @@ namespace json
 
         if (inColonComma)
         {
-            keyValPair.second = JsonEntity::makeNew(Raw(strn::trim_c(raw.substr(tokenStartIndex, currentIndex - tokenStartIndex))));
+            keyValPair.second = JsonEntity::_makeNew(Raw(strn::trim_c(raw.substr(tokenStartIndex, currentIndex - tokenStartIndex))));
             _data.insert(keyValPair);
         }
     }
