@@ -1,5 +1,6 @@
 # Up next
 
+* IJsonConvertable
 * Validation-Functionality
 * Streaming parsing
 * Better errors
@@ -8,6 +9,3 @@
 * Tidy up the interface (Maybe hide some public functions?)
 * setup gh-pages with doxygen
 * Iterators for JsonArray and JsonObject?
-* Remove necessity to write string values as "\\"value\\"" (instead as "value")
-
-# Discarded for now
