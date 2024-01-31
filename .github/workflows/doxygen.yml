@@ -43,7 +43,7 @@ jobs:
         personal_token: ${{ secrets.GITHUB_TOKEN }}
         publish_dir: ./docs/html
   deploy:
-  needs: build
+    needs: build
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
