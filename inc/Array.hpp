@@ -34,19 +34,40 @@ namespace json
         Array(const Array &other);
 
         /// @brief Create from a JSON-string
-        static Array createFromString(const std::string &str);
-
-        /// @brief Constructor from individual elements
-        template <typename T, typename... Ts>
-        Array(T t, Ts... ts)
-            : Array()
-        {
-            _data.reserve(sizeof...(Ts) + 1);
-            _initialize(t, ts...);
-        }
+        static Array fromString(const std::string &str);
 
         /// @brief Move-Constructor
         Array(Array &&other);
+
+        /// @brief Create from individual elements
+        template <typename T, typename... Ts>
+        static Array fromValues(T t, Ts... ts)
+        {
+            Array ret;
+            ret._data.reserve(sizeof...(Ts) + 1);
+            ret._initialize(t, ts...);
+            return ret;
+        }
+
+        template <typename Container>
+        static Array fromContainer(Container &container)
+        {
+            return fromContainer(container.begin(), container.end());
+        }
+
+        template <typename Iterator>
+        static Array fromContainer(Iterator begin, Iterator end)
+        {
+            Array ret;
+
+            ret._data.reserve(end - begin);
+            while (begin != end)
+            {
+                ret.push_back(*(begin++));
+            }
+
+            return ret;
+        }
 
         /// @brief Copy-Assignment operator
         Array &operator=(const Array &other);
@@ -55,7 +76,7 @@ namespace json
         Array &operator=(Array &&other);
 
         /// @brief Set the JSON-string the array represents
-        void fromString(std::string raw) override;
+        void loadString(std::string raw) override;
         /// @brief Get the JSON-String the array represents
         /// @note Use toStringF() for a formatted and more readable JSON-String
         [[nodiscard]] std::string toString() const override;

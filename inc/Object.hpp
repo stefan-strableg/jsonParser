@@ -21,7 +21,7 @@ namespace json
         Object();
 
         /// @brief Create from a JSON-string
-        static Object createFromString(const std::string &str);
+        static Object fromString(const std::string &str);
 
         /// @brief Copy-Constructor
         Object(const Object &other);
@@ -33,16 +33,21 @@ namespace json
         template <typename T>
         inline void insert(std::string key, T value)
         {
-            remove(key);
             _data.insert({key, JsonEntity::makeNew(value)});
         }
 
-        /// @brief Constructor from individual key-value pairs
-        template <typename T1, typename... Ts>
-        inline Object(std::string key, T1 value, Ts... ts)
-            : Object(ts...)
+        /// @brief Create from individual key-value pairs
+        template <typename T, typename... Ts>
+        static inline Object fromKeyValuePairs(std::string key, T value, Ts... rest)
         {
-            insert(key, value);
+            Object ret = Object::fromKeyValuePairs(rest...);
+            ret.insert(key, value);
+            return ret;
+        }
+
+        static inline Object fromKeyValuePairs()
+        {
+            return Object();
         }
 
         /// @brief Copy-Assignment operator
@@ -52,7 +57,7 @@ namespace json
         Object &operator=(Object &&other);
 
         /// @brief Set the JSON-string the object represents
-        void fromString(std::string raw) override;
+        void loadString(std::string raw) override;
         /// @brief Get the JSON-string the object represents
         [[nodiscard]] std::string toString() const override;
 

@@ -4,3 +4,4 @@
 #include "Object.hpp"
 #include "Value.hpp"
 #include "Raw.hpp"
+#include "IJsonConvertable.hpp"

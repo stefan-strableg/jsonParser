@@ -10,6 +10,10 @@ namespace json
     class Object;
     class Array;
     class Value;
+    class IJsonConvertable;
+
+    template <typename T>
+    concept JsonConvertable = std::is_base_of<IJsonConvertable, T>::value;
 
     /// @brief Options to control the formatting of generated JSON-string
     struct FormattingOptions
@@ -75,7 +79,7 @@ namespace json
         JsonEntity(JsonEntityType type_);
 
         /// @brief Set the JSON-string the object represents
-        virtual void fromString(std::string raw) = 0;
+        virtual void loadString(std::string raw) = 0;
 
         /// @brief Get the JSON-string the object represents
         [[nodiscard]] virtual std::string toString() const = 0;
@@ -117,21 +121,22 @@ namespace json
     };
 
     template <>
-    JsonEntity *JsonEntity::makeNew<JsonEntity>(const JsonEntity &raw);
+    JsonEntity *JsonEntity::makeNew<JsonEntity>(const JsonEntity &entity);
 
     template <>
-    JsonEntity *JsonEntity::makeNew<Object>(const Object &raw);
+    JsonEntity *JsonEntity::makeNew<Object>(const Object &object);
 
     template <>
-    JsonEntity *JsonEntity::makeNew<Array>(const Array &raw);
+    JsonEntity *JsonEntity::makeNew<Array>(const Array &array);
 
     template <>
-    JsonEntity *JsonEntity::makeNew<Value>(const Value &raw);
+    JsonEntity *JsonEntity::makeNew<Value>(const Value &value);
 
     template <>
-    JsonEntity *JsonEntity::makeNew<std::string>(const std::string &raw);
+    JsonEntity *JsonEntity::makeNew<std::string>(const std::string &str);
     template <>
-    JsonEntity *JsonEntity::makeNew<const char *>(const char *const &raw);
+    JsonEntity *JsonEntity::makeNew<const char *>(const char *const &str);
+
 }
 
 std::ostream &operator<<(std::ostream &os, const json::JsonEntity &entity);

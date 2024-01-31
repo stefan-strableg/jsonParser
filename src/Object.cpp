@@ -14,10 +14,10 @@ namespace json
     {
     }
 
-    Object Object::createFromString(const std::string &str)
+    Object Object::fromString(const std::string &str)
     {
         Object ret;
-        ret.fromString(str);
+        ret.loadString(str);
         return ret;
     }
 
@@ -79,7 +79,7 @@ namespace json
         return *this;
     }
 
-    void Object::fromString(std::string raw)
+    void Object::loadString(std::string raw)
     {
         for (auto &entity : _data)
         {

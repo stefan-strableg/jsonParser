@@ -11,10 +11,10 @@ namespace json
     Value::Value(std::string str)
         : JsonEntity(JsonEntityType::value)
     {
-        fromString(str);
+        loadString(str);
     }
 
-    void Value::fromString(std::string raw)
+    void Value::loadString(std::string raw)
     {
         _data = raw;
     }

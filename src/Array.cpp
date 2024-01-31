@@ -34,10 +34,10 @@ namespace json
         }
     }
 
-    Array Array::createFromString(const std::string &str)
+    Array Array::fromString(const std::string &str)
     {
         Array ret;
-        ret.fromString(str);
+        ret.loadString(str);
         return ret;
     }
 
@@ -76,7 +76,7 @@ namespace json
         return *this;
     }
 
-    void Array::fromString(std::string raw)
+    void Array::loadString(std::string raw)
     {
         size_t currentIndex = 1,
                tokenStartIndex = 1;

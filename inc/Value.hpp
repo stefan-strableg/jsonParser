@@ -38,7 +38,7 @@ namespace json
         }
 
         /// @brief Sets the value
-        void fromString(std::string raw) override;
+        void loadString(std::string raw) override;
 
         /// @brief Gets the value as raw string
         std::string toString() const override;
