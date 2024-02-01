@@ -1,12 +1,12 @@
 # Up next
 
-* Read Classes from Json
-* Object::merge
+* Read Classes from Json (IConvertableFromJson)
+* Look at move constructors
+* Object::append
+* Array::append
+* Iterators for Array and Object
 * Validation-Functionality
 * Streaming parsing
 * Better errors
-* JSON schema support?
-* JSON patch and merge?
 * Tidy up the interface (Maybe hide some public functions?)
-* setup gh-pages with doxygen
 * Iterators for JsonArray and JsonObject?

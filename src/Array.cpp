@@ -20,7 +20,6 @@ namespace json
     Array::Array(const Array &other)
         : Array()
     {
-        _data.clear();
         for (const auto &entity : other._data)
         {
             _data.push_back(JsonEntity::_makeNew(*entity));
@@ -30,7 +29,6 @@ namespace json
     Array::Array(Array &&other)
         : Array()
     {
-        _data.clear();
         for (auto &entity : other._data)
         {
             _data.push_back(entity);
@@ -66,17 +64,16 @@ namespace json
 
     Array &Array::operator=(Array &&other)
     {
-        for (auto &entity : _data)
-        {
-            delete entity;
-        }
+        std::destroy(_data.begin(), _data.end());
 
         _data.clear();
 
-        for (const auto &entity : other._data)
+        for (auto &entity : other._data)
         {
             _data.push_back(entity);
+            entity = nullptr;
         }
+
         return *this;
     }
 
@@ -209,11 +206,13 @@ namespace json
 
     void Array::remove(size_t index)
     {
+        delete _data[index];
         _data.erase(_data.begin() + index);
     }
 
     void Array::remove(size_t start, size_t length)
     {
+        std::destroy(_data.begin() + start, _data.begin() + start + length);
         _data.erase(_data.begin() + start, _data.begin() + start + length);
     }
 

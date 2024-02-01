@@ -30,7 +30,6 @@ namespace json
     Object::Object(const Object &other)
         : Object()
     {
-        _data.clear();
         for (const auto &entity : other._data)
         {
             _data.insert({entity.first, JsonEntity::_makeNew(*entity.second)});
@@ -40,7 +39,6 @@ namespace json
     Object::Object(Object &&other)
         : Object()
     {
-        _data.clear();
         for (auto &entity : other._data)
         {
             _data.insert(entity);

@@ -5,7 +5,7 @@ namespace json
 {
     class JsonEntity;
 
-    /// @brief This is the Interface implemented by all classes that can be converted to a JSON-Object or -Array (or -Value)
+    /// @brief This is the Interface implemented by all classes that can be converted to a JSON- Object or Array (or Value)
     struct IConvertableToJson
     {
     public:
