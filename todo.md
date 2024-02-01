@@ -1,6 +1,7 @@
 # Up next
 
 * Read Classes from Json
+* Object::merge
 * Validation-Functionality
 * Streaming parsing
 * Better errors

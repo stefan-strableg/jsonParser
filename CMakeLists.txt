@@ -2,14 +2,14 @@ cmake_minimum_required(VERSION 3.28)
 
 project(JsonParser)
 
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 add_compile_options(-Wall -Wextra -Wpedantic -static-libgcc -static-libstdc++)
 
 add_library(libJsonParser
     inc/Array.hpp src/Array.cpp
     inc/Json.hpp
-    inc/ICloneable.hpp
+    inc/IConvertableToJson.hpp
     inc/JsonEntity.hpp src/JsonEntity.cpp
     inc/Object.hpp src/Object.cpp
     inc/Raw.hpp

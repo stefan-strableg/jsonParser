@@ -27,6 +27,26 @@ namespace json
         /// @brief Create from a JSON-string
         static Object fromString(const std::string &str);
 
+        /// @brief Create from a Map-like container iterators
+        template <typename Iterator>
+        static inline Object fromContainer(Iterator begin, Iterator end)
+        {
+            Object ret;
+            while (begin != end)
+            {
+                ret.insert(begin->first, begin->second);
+                begin++;
+            }
+            return ret;
+        }
+
+        /// @brief Create from a Map-like container
+        template <typename Container>
+        static inline Object fromContainer(const Container &container)
+        {
+            return fromContainer(container.begin(), container.end());
+        }
+
         /// @brief Copy-Constructor
         Object(const Object &other);
 
