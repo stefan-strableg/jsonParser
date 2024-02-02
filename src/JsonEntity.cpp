@@ -1,5 +1,5 @@
 #include "../inc/JsonEntity.hpp"
-#include "../inc/IConvertableToJson.hpp"
+#include "../inc/Conversions.hpp"
 #include "../inc/Object.hpp"
 #include "../inc/Array.hpp"
 #include "../inc/Value.hpp"

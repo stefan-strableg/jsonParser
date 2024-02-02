@@ -5,7 +5,7 @@
 #include <sstream>
 #include <iostream>
 
-#include "IConvertableToJson.hpp"
+#include "Conversions.hpp"
 #include "compat.hpp"
 
 namespace json
@@ -64,7 +64,7 @@ namespace json
     extern FormattingOptions defaultJsonFormattingOptions;
 
     /// @brief Base class for all Json-entities
-    class JsonEntity : json::IConvertableToJson
+    class JsonEntity
     {
     protected:
         enum JsonEntityType : uint8_t
@@ -75,8 +75,7 @@ namespace json
         } type;
 
     public:
-        /// @brief Implements json::IConvertableToJson
-        virtual JsonEntity *toJson() const override = 0;
+        virtual inline JsonEntity *toJson() const { return nullptr; };
 
         /// @brief Parameterized Constructor
         JsonEntity(JsonEntityType type_);
@@ -106,14 +105,14 @@ namespace json
     private:
         /// @brief [Library internal] Creates a new Json-entity and returns a pointer to it.
         template <typename T>
-        [[nodiscard]] static inline typename std::enable_if<std::is_base_of<IConvertableToJson, T>::value, JsonEntity *>::type
+        [[nodiscard]] static inline typename std::enable_if<isConvertibleToJson<T>::value, JsonEntity *>::type
         _makeNew(const T &jsonCloneable)
         {
             return jsonCloneable.toJson();
         }
 
         template <typename T>
-        [[nodiscard]] static inline typename std::enable_if<!std::is_base_of<IConvertableToJson, T>::value, JsonEntity *>::type
+        [[nodiscard]] static inline typename std::enable_if<!isConvertibleToJson<T>::value, JsonEntity *>::type
         _makeNew(const T &raw)
         {
             std::string str;
