@@ -1,4 +1,9 @@
 var searchData=
 [
-  ['formattingoptions_0',['FormattingOptions',['../structjson_1_1_formatting_options.html',1,'json']]]
+  ['isconvertiblefromjsonarray_0',['isConvertibleFromJsonArray',['../structjson_1_1is_convertible_from_json_array.html',1,'json']]],
+  ['isconvertiblefromjsonarray_3c_20t_2c_20std_3a_3avoid_5ft_3c_20decltype_28std_3a_3adeclval_3c_20t_20_3e_28_29_3dt_3a_3afromjsonarray_28std_3a_3adeclval_3c_20const_20array_20_26_20_3e_28_29_29_29_3e_20_3e_1',['isConvertibleFromJsonArray&lt; T, std::void_t&lt; decltype(std::declval&lt; T &gt;()=T::fromJsonArray(std::declval&lt; const Array &amp; &gt;()))&gt; &gt;',['../structjson_1_1is_convertible_from_json_array_3_01_t_00_01std_1_1void__t_3_01decltype_07std_1_1ded6a2b8fc5d4df7735963bfb81076329e.html',1,'json']]],
+  ['isconvertiblefromjsonobject_2',['isConvertibleFromJsonObject',['../structjson_1_1is_convertible_from_json_object.html',1,'json']]],
+  ['isconvertiblefromjsonobject_3c_20t_2c_20std_3a_3avoid_5ft_3c_20decltype_28std_3a_3adeclval_3c_20t_20_3e_28_29_3dt_3a_3afromjsonobject_28std_3a_3adeclval_3c_20const_20object_20_26_20_3e_28_29_29_29_3e_20_3e_3',['isConvertibleFromJsonObject&lt; T, std::void_t&lt; decltype(std::declval&lt; T &gt;()=T::fromJsonObject(std::declval&lt; const Object &amp; &gt;()))&gt; &gt;',['../structjson_1_1is_convertible_from_json_object_3_01_t_00_01std_1_1void__t_3_01decltype_07std_1_1d33913a89c11798e492c41840e237e396.html',1,'json']]],
+  ['isconvertibletojson_4',['isConvertibleToJson',['../structjson_1_1is_convertible_to_json.html',1,'json']]],
+  ['isconvertibletojson_3c_20t_2c_20std_3a_3avoid_5ft_3c_20decltype_28_28jsonentity_20_2a_29_20std_3a_3adeclval_3c_20t_20_3e_28_29_2etojson_28_29_29_3e_20_3e_5',['isConvertibleToJson&lt; T, std::void_t&lt; decltype((JsonEntity *) std::declval&lt; T &gt;().toJson())&gt; &gt;',['../structjson_1_1is_convertible_to_json_3_01_t_00_01std_1_1void__t_3_01decltype_07_07_json_entity_0ef5e7d886e95e7f14b929dab2653a8e6.html',1,'json']]]
 ];

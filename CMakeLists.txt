@@ -9,7 +9,7 @@ add_compile_options(-Wall -Wextra -Wpedantic -static-libgcc -static-libstdc++)
 add_library(libJsonParser
     inc/Array.hpp src/Array.cpp
     inc/Json.hpp
-    inc/IConvertableToJson.hpp
+    inc/Conversions.hpp
     inc/JsonEntity.hpp src/JsonEntity.cpp
     inc/Object.hpp src/Object.cpp
     inc/Raw.hpp

@@ -78,17 +78,17 @@ You can very easily access nested **A**rrays, **O**bjects and **V**alues per Ref
 You can make your classes convertible to JSON by implementing one of those Methods:
 
 ```cpp
-    json::Object* toJson() const;
+    json::Object* YourClass::toJson() const;
     // or
-    json::Array* toJson() const;
+    json::Array* YourClass::toJson() const;
 ```
 
 You can make your classes convertible from JSON by implementing one of those Methods:
 
 ```cpp
-    static YourClass fromJsonObject(const json::Object&);
+    static YourClass YourClass::fromJsonObject(const json::Object&);
     // or
-    static YourClass fromJsonArray(const json::Array&);
+    static YourClass YourClass::fromJsonArray(const json::Array&);
 ```
 
 ## Simple loading from and writing to files

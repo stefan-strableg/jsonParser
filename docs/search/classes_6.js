@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['raw_0',['Raw',['../structjson_1_1_raw.html',1,'json']]]
+  ['s_0',['S',['../struct_s.html',1,'']]]
 ];

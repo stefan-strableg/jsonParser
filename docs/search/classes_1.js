@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['data_0',['Data',['../struct_data.html',1,'']]]
+  ['formattingoptions_0',['FormattingOptions',['../structjson_1_1_formatting_options.html',1,'json']]]
 ];

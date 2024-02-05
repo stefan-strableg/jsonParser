@@ -94,18 +94,16 @@ Inheritance diagram for json::JsonEntity:</div>
  <div class="center">
   <img src="classjson_1_1_json_entity.png" usemap="#json::JsonEntity_map" alt=""/>
   <map id="json::JsonEntity_map" name="json::JsonEntity_map">
-<area href="structjson_1_1_i_convertable_to_json.html" title="This is the Interface implemented by all classes that can be converted to a JSON-Object or -Array (or..." alt="json::IConvertableToJson" shape="rect" coords="164,0,318,24"/>
-<area href="classjson_1_1_array.html" title="Represents a JSON-array." alt="json::Array" shape="rect" coords="0,112,154,136"/>
-<area href="classjson_1_1_object.html" title="Represents a JSON-object." alt="json::Object" shape="rect" coords="164,112,318,136"/>
-<area href="classjson_1_1_value.html" title="Represents a JSON-value." alt="json::Value" shape="rect" coords="328,112,482,136"/>
+<area href="classjson_1_1_array.html" title="Represents a JSON-array." alt="json::Array" shape="rect" coords="0,56,99,80"/>
+<area href="classjson_1_1_object.html" title="Represents a JSON-object." alt="json::Object" shape="rect" coords="109,56,208,80"/>
+<area href="classjson_1_1_value.html" title="Represents a JSON-value." alt="json::Value" shape="rect" coords="218,56,317,80"/>
   </map>
 </div></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:ac8c4c727252b67a044abd0b0662e655b"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classjson_1_1_json_entity.html">JsonEntity</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classjson_1_1_json_entity.html#ac8c4c727252b67a044abd0b0662e655b">toJson</a> () const override=0</td></tr>
-<tr class="memdesc:ac8c4c727252b67a044abd0b0662e655b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Implements <a class="el" href="structjson_1_1_i_convertable_to_json.html" title="This is the Interface implemented by all classes that can be converted to a JSON-Object or -Array (or...">json::IConvertableToJson</a>.  <br /></td></tr>
-<tr class="separator:ac8c4c727252b67a044abd0b0662e655b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8faaefa4274cebc044f62fe724b902a5"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classjson_1_1_json_entity.html">JsonEntity</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classjson_1_1_json_entity.html#a8faaefa4274cebc044f62fe724b902a5">toJson</a> () const</td></tr>
+<tr class="separator:a8faaefa4274cebc044f62fe724b902a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6f3c0b74f52d8d1a044e4cf91722e0ec"><td class="memItemLeft" align="right" valign="top"><a id="a6f3c0b74f52d8d1a044e4cf91722e0ec" name="a6f3c0b74f52d8d1a044e4cf91722e0ec"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>JsonEntity</b> (JsonEntityType type_)</td></tr>
 <tr class="memdesc:a6f3c0b74f52d8d1a044e4cf91722e0ec"><td class="mdescLeft">&#160;</td><td class="mdescRight">Parameterized Constructor. <br /></td></tr>
@@ -236,8 +234,8 @@ enum json::JsonEntity::JsonEntityType&#160;</td><td class="memItemRight" valign=
 
 </div>
 </div>
-<a id="ac8c4c727252b67a044abd0b0662e655b" name="ac8c4c727252b67a044abd0b0662e655b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac8c4c727252b67a044abd0b0662e655b">&#9670;&#160;</a></span>toJson()</h2>
+<a id="a8faaefa4274cebc044f62fe724b902a5" name="a8faaefa4274cebc044f62fe724b902a5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8faaefa4274cebc044f62fe724b902a5">&#9670;&#160;</a></span>toJson()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -254,16 +252,12 @@ enum json::JsonEntity::JsonEntityType&#160;</td><td class="memItemRight" valign=
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">pure virtual</span></span>  </td>
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
 
-<p>Implements <a class="el" href="structjson_1_1_i_convertable_to_json.html" title="This is the Interface implemented by all classes that can be converted to a JSON-Object or -Array (or...">json::IConvertableToJson</a>. </p>
-
-<p>Implements <a class="el" href="structjson_1_1_i_convertable_to_json.html#a077e8050d851552125a8dcb2fa558ad5">json::IConvertableToJson</a>.</p>
-
-<p>Implemented in <a class="el" href="classjson_1_1_array.html#a4cad2fae21b60d9c9a4e5ed5c608a5b6">json::Array</a>, <a class="el" href="classjson_1_1_object.html#ac1c693827fe96d477e8c91327ea71d5e">json::Object</a>, and <a class="el" href="classjson_1_1_value.html#a7c453dd41e1209cfe53386c3a5f857fd">json::Value</a>.</p>
+<p>Reimplemented in <a class="el" href="classjson_1_1_array.html#a4cad2fae21b60d9c9a4e5ed5c608a5b6">json::Array</a>, and <a class="el" href="classjson_1_1_value.html#a7c453dd41e1209cfe53386c3a5f857fd">json::Value</a>.</p>
 
 </div>
 </div>

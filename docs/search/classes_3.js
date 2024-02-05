@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['iconvertabletojson_0',['IConvertableToJson',['../structjson_1_1_i_convertable_to_json.html',1,'json']]]
+  ['jsonentity_0',['JsonEntity',['../classjson_1_1_json_entity.html',1,'json']]]
 ];
