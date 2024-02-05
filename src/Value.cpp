@@ -9,12 +9,12 @@ namespace json
     }
 
     Value::Value()
-        : JsonEntity(JsonEntity::value)
+        : JsonEntity(JsonEntity::VALUE)
     {
     }
 
     Value::Value(std::string str)
-        : JsonEntity(JsonEntityType::value)
+        : JsonEntity(JsonEntityType::VALUE)
     {
         loadString(str);
     }

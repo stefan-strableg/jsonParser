@@ -60,6 +60,9 @@ namespace json
             _data.insert({key, JsonEntity::_makeNew(value)});
         }
 
+        /// @brief Inserts the contents of another object into this object
+        void append(const Object &other);
+
         /// @brief Create from individual key-value pairs
         template <typename T, typename... Ts>
         static inline Object fromKeyValuePairs(std::string key, T value, Ts... rest)
@@ -150,6 +153,18 @@ namespace json
 
         /// @brief Destructor
         ~Object();
+
+        /// @brief Returns an iterator to the first element
+        std::map<std::string, JsonEntity *>::iterator begin();
+
+        /// @brief Returns an iterator to the element after the last
+        std::map<std::string, JsonEntity *>::iterator end();
+
+        /// @brief Returns a const iterator to the first element
+        std::map<std::string, JsonEntity *>::const_iterator cbegin();
+
+        /// @brief Returns a const iterator to the element after the last
+        std::map<std::string, JsonEntity *>::const_iterator cend();
     };
 
 }

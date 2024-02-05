@@ -133,6 +133,9 @@ namespace json
             _data.insert(_data.begin() + n, JsonEntity::_makeNew(value));
         }
 
+        /// @brief Appends the contents of another array
+        void append(const Array &other);
+
         /// @brief Erases an entity at the given index
         void remove(size_t index);
 
@@ -151,5 +154,17 @@ namespace json
 
         /// @brief Deconstructor
         ~Array();
+
+        /// @brief Returns an iterator to the first element
+        std::vector<JsonEntity *>::iterator begin();
+
+        /// @brief Returns an iterator to the element after the last
+        std::vector<JsonEntity *>::iterator end();
+
+        /// @brief Returns a const iterator to the first element
+        std::vector<JsonEntity *>::const_iterator cbegin();
+
+        /// @brief Returns a const iterator to the element after the last
+        std::vector<JsonEntity *>::const_iterator cend();
     };
 }

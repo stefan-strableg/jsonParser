@@ -16,7 +16,7 @@ namespace json
     }
 
     Object::Object()
-        : JsonEntity(JsonEntityType::object)
+        : JsonEntity(JsonEntityType::OBJECT)
     {
     }
 
@@ -43,6 +43,14 @@ namespace json
         {
             _data.insert(entity);
             entity.second = nullptr;
+        }
+    }
+
+    void Object::append(const Object &other)
+    {
+        for (const auto &entry : other._data)
+        {
+            _data.insert({entry.first, _makeNew(*entry.second)});
         }
     }
 
@@ -208,7 +216,7 @@ namespace json
     {
         if (!MAP_CONTAINS(_data, key))
             throw std::out_of_range("JsonObject::A: there is no element with key " + key);
-        if (_data[key]->getType() != JsonEntityType::array)
+        if (_data[key]->getType() != JsonEntityType::ARRAY)
             throw std::runtime_error("JsonObject::A: Value of element with key " + key + " is not of type array");
         return dynamic_cast<Array &>(*_data[key]);
     }
@@ -217,7 +225,7 @@ namespace json
     {
         if (!MAP_CONTAINS(_data, key))
             throw std::out_of_range("JsonObject::O: there is no element with key " + key);
-        if (_data[key]->getType() != JsonEntityType::object)
+        if (_data[key]->getType() != JsonEntityType::OBJECT)
             throw std::runtime_error("JsonObject::O: Value of element with key " + key + " is not of type object");
         return dynamic_cast<Object &>(*_data[key]);
     }
@@ -226,7 +234,7 @@ namespace json
     {
         if (!MAP_CONTAINS(_data, key))
             throw std::out_of_range("JsonObject::V: there is no element with key " + key);
-        if (_data[key]->getType() != JsonEntityType::value)
+        if (_data[key]->getType() != JsonEntityType::VALUE)
             throw std::runtime_error("JsonObject::V: Value of element with key " + key + " is not of type value");
         return dynamic_cast<Value &>(*_data[key]);
     }
@@ -235,20 +243,20 @@ namespace json
     {
         if (!MAP_CONTAINS(_data, key))
             throw std::out_of_range("JsonObject::S: there is no element with key " + key);
-        if (_data.at(key)->getType() != JsonEntityType::value)
+        if (_data.at(key)->getType() != JsonEntityType::VALUE)
             throw std::runtime_error("JsonObject::S: Value of element with key " + key + " is not of type string");
         return _data.at(key)->toString();
     }
 
     bool Object::getBool(std::string key) const
     {
-        return MAP_CONTAINS(_data, key) && _data.at(key)->getType() == JsonEntityType::value && _data.at(key)->toString() == "true";
+        return MAP_CONTAINS(_data, key) && _data.at(key)->getType() == JsonEntityType::VALUE && _data.at(key)->toString() == "true";
     }
 
     std::string Object::getString(std::string key) const
     {
         std::string ret;
-        if (MAP_CONTAINS(_data, key) && _data.at(key)->getType() == JsonEntityType::value)
+        if (MAP_CONTAINS(_data, key) && _data.at(key)->getType() == JsonEntityType::VALUE)
             ret = _data.at(key)->toString();
         else
             return std::string();
@@ -266,11 +274,11 @@ namespace json
 
         switch (_data.at(key)->getType())
         {
-        case JsonEntityType::array:
+        case JsonEntityType::ARRAY:
             return "array";
-        case JsonEntityType::object:
+        case JsonEntityType::OBJECT:
             return "object";
-        case JsonEntityType::value:
+        case JsonEntityType::VALUE:
             return "value";
         }
 
@@ -311,7 +319,7 @@ namespace json
     {
         for (const auto &entity : _data)
         {
-            if (entity.second->getType() == JsonEntityType::object || entity.second->getType() == JsonEntityType::array)
+            if (entity.second->getType() == JsonEntityType::OBJECT || entity.second->getType() == JsonEntityType::ARRAY)
                 return false;
         }
         return true;
@@ -348,7 +356,7 @@ namespace json
 
             const bool isItemInline = options.forceInline || (options.inlineShortBottomLevelObjects && entity.second->isBottomLayer() && entity.second->toString().size() < options.maxLengthToInline);
 
-            if (!isInline && !isItemInline && options.firstBracketInNewline && entity.second->getType() != JsonEntityType::value)
+            if (!isInline && !isItemInline && options.firstBracketInNewline && entity.second->getType() != JsonEntityType::VALUE)
                 outStream << '\n'
                           << options._getTab(tabs);
             outStream << entity.second->toStringF(options, tabs);
@@ -383,4 +391,23 @@ namespace json
         }
     }
 
+    std::map<std::string, JsonEntity *>::iterator Object::begin()
+    {
+        return _data.begin();
+    }
+
+    std::map<std::string, JsonEntity *>::iterator Object::end()
+    {
+        return _data.end();
+    }
+
+    std::map<std::string, JsonEntity *>::const_iterator Object::cbegin()
+    {
+        return _data.cbegin();
+    }
+
+    std::map<std::string, JsonEntity *>::const_iterator Object::cend()
+    {
+        return _data.cend();
+    }
 }

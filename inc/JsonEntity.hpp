@@ -66,15 +66,14 @@ namespace json
     /// @brief Base class for all Json-entities
     class JsonEntity
     {
-    protected:
+    public:
         enum JsonEntityType : uint8_t
         {
-            value,
-            array,
-            object
+            VALUE,
+            ARRAY,
+            OBJECT
         } type;
 
-    public:
         virtual inline JsonEntity *toJson() const { return nullptr; };
 
         /// @brief Parameterized Constructor

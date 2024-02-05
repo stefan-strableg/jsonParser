@@ -13,7 +13,7 @@ namespace json
     }
 
     Array::Array()
-        : JsonEntity(JsonEntityType::array)
+        : JsonEntity(JsonEntityType::ARRAY)
     {
     }
 
@@ -153,7 +153,7 @@ namespace json
     {
         if (_data.size() <= index)
             throw std::out_of_range("JsonArray::A: index " + std::to_string(index) + " is out of bounds");
-        if (_data[index]->getType() != JsonEntityType::array)
+        if (_data[index]->getType() != JsonEntityType::ARRAY)
             throw std::runtime_error("JsonArray::A: Element " + std::to_string(index) + " is not of type array");
         return dynamic_cast<Array &>(*_data[index]);
     }
@@ -162,7 +162,7 @@ namespace json
     {
         if (_data.size() <= index)
             throw std::out_of_range("JsonArray::O: index " + std::to_string(index) + " is out of bounds");
-        if (_data[index]->getType() != JsonEntityType::object)
+        if (_data[index]->getType() != JsonEntityType::OBJECT)
             throw std::runtime_error("JsonArray::O: Element " + std::to_string(index) + " is not of type object");
         return dynamic_cast<Object &>(*_data[index]);
     }
@@ -171,8 +171,8 @@ namespace json
     {
         if (_data.size() <= index)
             throw std::out_of_range("JsonArray::V: index " + std::to_string(index) + " is out of bounds");
-        if (_data[index]->getType() != JsonEntityType::value)
-            throw std::runtime_error("JsonArray::V: Element " + std::to_string(index) + " is not of type value");
+        if (_data[index]->getType() != JsonEntityType::VALUE)
+            throw std::runtime_error("JsonArray::V: Element " + std::to_string(index) + " is not of type VALUE");
         return dynamic_cast<Value &>(*_data[index]);
     }
 
@@ -180,20 +180,20 @@ namespace json
     {
         if (_data.size() <= index)
             throw std::out_of_range("JsonArray::S: index " + std::to_string(index) + " is out of bounds");
-        if (_data.at(index)->getType() != JsonEntityType::value)
+        if (_data.at(index)->getType() != JsonEntityType::VALUE)
             throw std::runtime_error("JsonArray::S: Element " + std::to_string(index) + " is not of type string");
         return _data.at(index)->toString();
     }
 
     bool Array::getBool(size_t index) const
     {
-        return _data.size() >= index && _data.at(index)->getType() == JsonEntityType::value && _data.at(index)->toString() == "true";
+        return _data.size() >= index && _data.at(index)->getType() == JsonEntityType::VALUE && _data.at(index)->toString() == "true";
     }
 
     std::string Array::getString(size_t index) const
     {
         std::string ret;
-        if (_data.size() > index && _data.at(index)->getType() == JsonEntityType::value)
+        if (_data.size() > index && _data.at(index)->getType() == JsonEntityType::VALUE)
             ret = _data.at(index)->toString();
         else
             return std::string();
@@ -202,6 +202,15 @@ namespace json
             return std::string();
 
         return ret.substr(1, ret.size() - 2);
+    }
+
+    void Array::append(const Array &other)
+    {
+        _data.reserve(_data.size() + other._data.size());
+        for (size_t i = 0; i < other._data.size(); i++)
+        {
+            _data.push_back(JsonEntity::_makeNew(*other._data.at(i)));
+        }
     }
 
     void Array::remove(size_t index)
@@ -223,11 +232,11 @@ namespace json
 
         switch (_data[index]->getType())
         {
-        case JsonEntityType::array:
+        case JsonEntityType::ARRAY:
             return "array";
-        case JsonEntityType::object:
+        case JsonEntityType::OBJECT:
             return "object";
-        case JsonEntityType::value:
+        case JsonEntityType::VALUE:
             return "value";
         }
         return "invalid type";
@@ -242,7 +251,7 @@ namespace json
     {
         for (const auto &entity : _data)
         {
-            if (entity->getType() == JsonEntityType::object || entity->getType() == JsonEntityType::array)
+            if (entity->getType() == JsonEntityType::OBJECT || entity->getType() == JsonEntityType::ARRAY)
                 return false;
         }
         return true;
@@ -277,7 +286,7 @@ namespace json
             if (!isInline)
                 outStream << options._getTab(tabs);
 
-            if (!isInline && options.firstBracketInNewline && entity->getType() != JsonEntityType::value && entity->getType() != JsonEntityType::array)
+            if (!isInline && options.firstBracketInNewline && entity->getType() != JsonEntityType::VALUE && entity->getType() != JsonEntityType::ARRAY)
                 outStream << '\n'
                           << options._getTab(tabs);
             outStream << entity->toStringF(options, tabs);
@@ -309,5 +318,25 @@ namespace json
         {
             delete entity;
         }
+    }
+
+    std::vector<JsonEntity *>::iterator Array::begin()
+    {
+        return _data.begin();
+    }
+
+    std::vector<JsonEntity *>::iterator Array::end()
+    {
+        return _data.end();
+    }
+
+    std::vector<JsonEntity *>::const_iterator Array::cbegin()
+    {
+        return _data.cbegin();
+    }
+
+    std::vector<JsonEntity *>::const_iterator Array::cend()
+    {
+        return _data.cend();
     }
 }
